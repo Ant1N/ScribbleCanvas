@@ -1,2 +1,2 @@
 # ScribbleCanvas
-Ett grupparbete med Scribble.io
+Ett grupparbete med socket.io
