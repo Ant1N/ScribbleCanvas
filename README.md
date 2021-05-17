@@ -1,2 +1,2 @@
 # ScribbleCanvas
-Ett grupparbete med Scirbble.io
+Ett grupparbete med Scribble.io
