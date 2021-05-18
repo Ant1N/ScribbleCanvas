@@ -1,6 +1,6 @@
 const socket = io();
 
-document.getElementById('chatPage').style.display= "none";
+document.getElementById('content').style.display= "none";
 
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
@@ -10,7 +10,7 @@ const userList = document.getElementById('users');
 // GET USERNAME AND ROOM FROM URL
 
 document.getElementById('joinChat').addEventListener('click', () => {
-    document.getElementById('chatPage').style.display= "block";
+    document.getElementById('content').style.display= "flex";
     document.getElementById('landingPage').style.display= "none";
     const username = document.getElementById('username').value;
 
