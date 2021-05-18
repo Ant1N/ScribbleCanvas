@@ -224,7 +224,7 @@ a {
 }
 
 .join-main input[type='text'] {
-	color:rgb(255, 255, 255);
+	color:rgb(0, 0, 0);
 	font-size: 16px;
 	padding: 5px;
 	height: 40px;
