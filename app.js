@@ -20,4 +20,58 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-module.exports = app;
+const formatMessage = require('./utils/messages.js');
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users.js');
+
+const botName = 'Chattroboten';
+
+io.on('connection', socket => {
+
+    // GET USER AND ROOM FROM USERS.JS
+    socket.on('joinGame', ( username ) => {
+        // PUSH USER TO USER-ARRAY
+        const user = userJoin(socket.id, username);
+        console.log(user);
+        
+        // WELCOME CURRENT USER
+        // EMIT = SEND TO CURRENT USER
+        socket.emit('message', formatMessage(botName, "Välkommen till chatten!"));
+
+        // WHEN A USER CONNECT
+        // BROADCAST = SEND TO ALL USERS
+        socket.broadcast.emit('message', formatMessage(botName, `${user.username} har anslutit till chatten!`));
+
+        // SEND ROOM AND USERS TO FRONTEND
+        // io.to(user.room).emit('roomUsers', {
+        //     room: user.room,
+        //     users: getRoomUsers(user.room)
+        // });
+    });
+
+    // LISTEN FOR CHAT MESSAGE
+    socket.on('chatMessage', (msg) => {
+        const user = getCurrentUser(socket.id);
+
+        // SEND MESSAGE TO FRONTEND
+        io.emit('message', formatMessage(user.username, msg));
+    });
+
+    // WHEN A USER DISCONNECT
+    socket.on("disconnect", () => {
+
+        // REMOVE USER FROM ARRAY
+        const user = userLeave(socket.id);
+
+        if (user) {
+            io.emit('message', formatMessage(botName, `${user.username} har lämnat chatten.`));
+
+            // SEND NEW INFO TO FRONTEND
+            // io.emit('roomUsers', {
+            //     room: user.room,
+            //     users: getRoomUsers(user.room)
+            // });
+        };
+    });
+});
+
+module.exports = {app: app, server: server};
