@@ -4,20 +4,17 @@ document.getElementById('content').style.display = 'none';
 
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
-const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
 const saveBtn = document.getElementById('saveBtn');
 const getGameBtn = document.getElementById('getGameBtn');
 
-// GET USERNAME AND ROOM FROM URL
-
+// JOIN GAME, SEND USERNAME, PRINT GRID
 document.getElementById('joinChat').addEventListener('click', () => {
   const username = document.getElementById('username').value;
   document.getElementById('content').style.display = 'flex';
   document.getElementById('landingPage').style.display = 'none';
 
-  console.log('getusername', username);
   socket.emit('joinGame', username);
   createGrid();
 });
@@ -35,13 +32,12 @@ function createGrid() {
   gameContainer.insertAdjacentHTML('afterbegin', html);
 }
 
-// GET ROOM AND USERS
-socket.on('roomUsers', ({ room, users }) => {
-  outputRoomName(room);
+// GET ROOM AND USERS AND PRINT IN CHAT
+socket.on('roomUsers', ({ users }) => {
   outputUsers(users);
 });
 
-// GET MESSAGE FROM SERVER
+// GET MESSAGE FROM SERVER AND PRINT IT
 socket.on('message', (message) => {
   outputMessage(message);
 
@@ -51,12 +47,12 @@ socket.on('message', (message) => {
 
 socket.on('playerColor', (data) => {
   addColorOnPixel(data.color);
-  console.log(data);
+  // console.log(data);
 });
 
 // Send the players color and clicked pixel-ID to server for broadcasting
 function addColorOnPixel(color) {
-  console.log('color:', color);
+  // console.log('color:', color);
   // Get your assigned color
   // let color = document.querySelector('.colorbox').id;
 
@@ -65,7 +61,7 @@ function addColorOnPixel(color) {
     pixel.addEventListener('click', (e) => {
       // If pixel doesn't have an inline background-color style
       // Then set color (so you can't change another players pixel)
-      console.log('clicking pixel');
+      // console.log('clicking pixel');
       if (!e.target.getAttribute('style')) {
         // Set the pixel-color for the player
         e.target.setAttribute('style', `background-color: ${color}`);
@@ -95,7 +91,6 @@ chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
   const msg = e.target.elements.msg.value;
-  // const msg = document.getElementById('msg').value;
 
   // SEND MESSAGE TO SERVER
   socket.emit('chatMessage', msg);
@@ -117,11 +112,6 @@ function outputMessage(message) {
   document.querySelector('.chat-messages').appendChild(div);
 }
 
-// PRINT ROOMNAME
-function outputRoomName(room) {
-  roomName.innerText = room;
-}
-
 function outputUsers(users) {
   userList.innerHTML = '';
 
@@ -139,7 +129,7 @@ saveBtn.addEventListener('click', () => {
 
 async function saveGame() {
   const htmlGameState = document.getElementById('gamefield').outerHTML;
-  console.log(htmlGameState);
+  // console.log(htmlGameState);
   const response = await fetch('http://localhost:3000/save', {
     method: 'POST',
     headers: {
@@ -150,10 +140,12 @@ async function saveGame() {
   const result = await response.json();
   console.log(result);
 }
+
 getGameBtn.addEventListener('click', () => {
   getGame();
 });
-function getGame(result) {
+
+function getGame() {
   const gameField = document.getElementById('gamefield');
   fetch('http://localhost:3000/getGame')
     .then((resp) => resp.json())
