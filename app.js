@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const socketio = require('socket.io');
+const mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -10,6 +11,18 @@ var usersRouter = require('./routes/users');
 var app = express();
 const server = require('http').Server(app);
 const io = socketio(server);
+
+mongoose.connect( "mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority", {
+
+useNewUrlParser: true,
+
+useCreateIndex: true,
+
+useFindAndModify: false,
+
+useUnifiedTopology: true,
+
+},() => console.log("connected to db"));
 
 app.use(logger('dev'));
 app.use(express.json());

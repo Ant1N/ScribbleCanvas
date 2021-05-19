@@ -7,6 +7,9 @@ const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
+const saveBtn = document.getElementById('saveBtn');
+
+
 // GET USERNAME AND ROOM FROM URL
 
 document.getElementById('joinChat').addEventListener('click', () => {
@@ -125,8 +128,25 @@ function outputUsers(users) {
     for (user in users) {
         userList.insertAdjacentHTML(
             'beforeend',
-            `<li>${users[user].username}</li>
-    `
+            `<li>${users[user].username}</li>`
         );
     }
+}
+
+saveBtn.addEventListener('click', () => {
+    saveGame();
+});
+
+async function saveGame() {
+    const htmlGameState = document.getElementById('gamefield').outerHTML;
+    console.log(htmlGameState);
+    const response = await fetch('http://localhost:3000/save', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ htmlGameState }),
+    });
+    const result = await response.json();
+    console.log(result);
 }
