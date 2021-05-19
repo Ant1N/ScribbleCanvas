@@ -6,18 +6,26 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
-const saveBtn = document.getElementById('saveBtn');
-const getGameBtn = document.getElementById('getGameBtn');
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
-document.getElementById('joinChat').addEventListener('click', () => {
-  document.getElementById('content').style.display = 'flex';
-  document.getElementById('landingPage').style.display = 'none';
+document.addEventListener('click', (evt) => {
+  switch (evt.target.id) {
+    case 'joinChat':
+      document.getElementById('content').style.display = 'flex';
+      document.getElementById('landingPage').style.display = 'none';
 
-  const username = document.getElementById('username').value;
-  socket.emit('joinGame', username);
-  createGrid();
-  createBtns();
+      const username = document.getElementById('username').value;
+      socket.emit('joinGame', username);
+      createGrid();
+      createBtns();
+    break;
+    case 'saveBtn':
+      saveGame();
+    break;
+    case 'getGameBtn':
+      getGame();
+    break;
+  };
 });
 
 // Genereate the gamefield container and pixels 15x15
@@ -130,9 +138,7 @@ function outputUsers(users) {
   }
 }
 
-saveBtn.addEventListener('click', () => {
-  saveGame();
-});
+
 
 async function saveGame() {
   const htmlGameState = document.getElementById('gamefield').outerHTML;
@@ -147,10 +153,6 @@ async function saveGame() {
   const result = await response.json();
   console.log(result);
 }
-
-getGameBtn.addEventListener('click', () => {
-  getGame();
-});
 
 function getGame() {
   const gameField = document.getElementById('gamefield');
