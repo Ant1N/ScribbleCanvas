@@ -151,7 +151,6 @@ async function saveGame() {
   console.log(result);
 }
 getGameBtn.addEventListener('click', () => {
-  console.log('hej');
   getGame();
 });
 function getGame(result) {

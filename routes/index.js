@@ -13,6 +13,7 @@ router.get('/getGame', async function (req, res, next) {
 });
 
 router.post('/save', async function (req, res, next) {
+  await Game.deleteOne({});
   let data = req.body.htmlGameState;
 
   const game = new Game({
