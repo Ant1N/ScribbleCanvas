@@ -22,4 +22,9 @@ function userLeave(id) {
     };
 };
 
-module.exports = { userJoin, getCurrentUser, userLeave };
+// GET ROOMT USERS
+function getRoomUsers() {
+    return users;
+};
+
+module.exports = { userJoin, getCurrentUser, userLeave, getRoomUsers };

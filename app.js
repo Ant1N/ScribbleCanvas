@@ -70,10 +70,10 @@ const botName = 'Chattroboten';
 io.on('connection', (socket) => {
     // GET USER AND ROOM FROM USERS.JS
     socket.on('joinGame', (username) => {
-        console.log('username', username);
+        // console.log('username', username);
+        
         // PUSH USER TO USER-ARRAY
         const user = userJoin(socket.id, username);
-        console.log(user);
 
         // WELCOME CURRENT USER
         // EMIT = SEND TO CURRENT USER
@@ -106,11 +106,11 @@ io.on('connection', (socket) => {
         socket.on('addColorOnTarget', ({ id, color }) => {
             socket.broadcast.emit('addPixel', { id, color });
         });
+
         // SEND ROOM AND USERS TO FRONTEND
-        // io.to(user.room).emit('roomUsers', {
-        //     room: user.room,
-        //     users: getRoomUsers(user.room)
-        // });
+        io.emit('roomUsers', {
+            users: getRoomUsers()
+        });
     });
 
     // LISTEN FOR CHAT MESSAGE
@@ -132,11 +132,10 @@ io.on('connection', (socket) => {
                 formatMessage(botName, `${user.username} har lämnat chatten.`)
             );
 
-            // SEND NEW INFO TO FRONTEND
-            // io.emit('roomUsers', {
-            //     room: user.room,
-            //     users: getRoomUsers(user.room)
-            // });
+            // SEND DISCONNECTED USER
+            io.emit('roomUsers', {
+                users: getRoomUsers()
+            });
         }
     });
 });
