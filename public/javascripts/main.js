@@ -11,12 +11,13 @@ const getGameBtn = document.getElementById('getGameBtn');
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
 document.getElementById('joinChat').addEventListener('click', () => {
-  const username = document.getElementById('username').value;
   document.getElementById('content').style.display = 'flex';
   document.getElementById('landingPage').style.display = 'none';
 
+  const username = document.getElementById('username').value;
   socket.emit('joinGame', username);
   createGrid();
+  createBtns();
 });
 
 // Genereate the gamefield container and pixels 15x15
@@ -31,6 +32,12 @@ function createGrid() {
   // Where to insert the gamefield container
   gameContainer.insertAdjacentHTML('afterbegin', html);
 }
+
+// CREATE BTNS
+function createBtns() {
+  document.getElementById('btnsContainer').innerHTML = `<button id="saveBtn">Spara</button>
+  <button id="getGameBtn">Hämta</button>`
+};
 
 // GET ROOM AND USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
