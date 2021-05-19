@@ -153,12 +153,16 @@ async function saveGame() {
 getGameBtn.addEventListener('click', () => {
   getGame();
 });
-function getGame(result) {
+
+function getGame() {
   const gameField = document.getElementById('gamefield');
   fetch('http://localhost:3000/getGame')
     .then((resp) => resp.json())
     .then((data) => {
-      console.log(data.gameboard);
+      console.log("all data", data);
+      console.log("gameboard", data.gameboard);
       gameField.outerHTML = data.gameboard;
-    });
+    }); 
 }
+
+
