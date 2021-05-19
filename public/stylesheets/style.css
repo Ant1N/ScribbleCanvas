@@ -83,7 +83,6 @@ a {
 
 #gamefield {
     flex: 1;
-    min-width: 50vw;
     min-height: 648px;
     background-color: var(--dark-color-a);
     border-radius: 5px;
@@ -94,6 +93,7 @@ a {
     flex: 1;
     background: var(--light-color);
     overflow: hidden;
+    
 }
 
 .chat-header {
@@ -112,6 +112,8 @@ a {
 .chat-main {
     display: grid;
     grid-template-columns: 1fr 3fr;
+    min-height: 605px;
+
 }
 
 .chat-sidebar {
