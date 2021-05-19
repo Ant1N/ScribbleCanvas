@@ -62,6 +62,7 @@ socket.on('message', (message) => {
 
 socket.on('playerColor', (data) => {
   addColorOnPixel(data.color);
+  localStorage.setItem("playerColor", data.color);
   // console.log(data);
 });
 
@@ -161,5 +162,6 @@ function getGame() {
     .then((data) => {
       console.log(data.gameboard);
       gameField.outerHTML = data.gameboard;
+      addColorOnPixel(localStorage.getItem("playerColor"));
     });
 }
