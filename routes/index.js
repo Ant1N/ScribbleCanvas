@@ -3,20 +3,24 @@ var router = express.Router();
 const Game = require('../schemas/gameSchema.js');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/save', async function(req, res, next) {
-  let data = req.body;
+router.get('/getGame', async function (req, res, next) {
+  const data = await Game.findOne({});
+  res.json(data);
+});
 
-  let sendData = JSON.stringify(data);
+router.post('/save', async function (req, res, next) {
+  let data = req.body.htmlGameState;
 
   const game = new Game({
-    gameboard: sendData,
+    gameboard: data,
   });
-    
+
   const saved = await game.save();
+
   res.json({ id: saved.id });
 });
 
