@@ -19,7 +19,6 @@ document.addEventListener('click', (evt) => {
       const username = document.getElementById('username').value;
       socket.emit('joinGame', username);
       removeModal();
-      // createBtns();
       break;
     case 'saveBtn':
       saveGame();
@@ -27,6 +26,9 @@ document.addEventListener('click', (evt) => {
     case 'getGameBtn':
       getGame();
       break;
+    case 'savePicToDB':
+      savePicToDB();
+    break;
   }
 });
 
@@ -86,6 +88,10 @@ function addColorOnPixel(color) {
 
         // Send the data to server for broadcast to the other players
         socket.emit('addColorOnTarget', pixelData);
+        
+        let sendPixelInfo = {id: e.target.id, color: color};
+
+        socket.emit('toPicArray', sendPixelInfo);
       }
     });
   });
@@ -148,6 +154,32 @@ async function saveGame() {
   const result = await response.json();
   console.log(result);
 }
+
+
+
+// socket.on('sendArrayToServer', (array) => {
+  
+//   document.getElementById('savePicToDB').addEventListener('click', () => {
+//     console.log("Här", array);
+    
+//   });
+// });
+
+function savePicToDB() {
+  socket.emit('wantsPicArray', "click");
+
+  socket.on('sendArrayToServer', array => {
+    console.log("Denna ska skickas", array);
+
+    fetch('http://localhost:3000/savePic', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ array })
+    });
+  });
+};
 
 function getGame() {
   const gameField = document.getElementById('gamefield');
