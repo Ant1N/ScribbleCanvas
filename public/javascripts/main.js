@@ -19,7 +19,7 @@ document.addEventListener('click', (evt) => {
       const username = document.getElementById('username').value;
       socket.emit('joinGame', username);
       removeModal();
-      createBtns();
+      // createBtns();
       break;
     case 'saveBtn':
       saveGame();
