@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Roboto+Mono&display=swap');
+/* font-family: 'Raleway', sans-serif;
+font-family: 'Roboto Mono', monospace; */
 :root {
     --dark-color-a: rgba(30, 51, 80, 0.7);
     --dark-color-b: rgba(53, 84, 119, 0.7);
@@ -8,19 +9,18 @@
     --error-color: #ff6862;
 }
 
+/* general styling */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overflow-y: hidden;
 }
 
 body {
-    font-size: 16px;
-    background-image: url('placeholder.jpg');
-    background-size: cover;
-    /* background: var(--light-color); */
-    margin: 20px;
-    font-family: 'Lato', sans-serif;
+    background-color: #fcfcfc;
+    font-family: 'Raleway', sans-serif;
     letter-spacing: 2px;
 }
 
@@ -36,15 +36,57 @@ a {
     text-decoration: none;
 }
 
-.sp-input {
-    color: black;
-    border: 0;
-    outline: none;
-    font-family: 'Lato', sans-serif;
-    letter-spacing: 1px;
+/* modal */
+
+#modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vw;
+    height: 18vh;
+    border: solid 1px #000;
+    background-color: #fff;
 }
 
-.btn {
+#modal h2 {
+    text-align: center;
+    padding: 5px;
+    border-bottom: 1px solid black; 
+    border-width: 50%;
+}
+
+#modal input {
+    display: block;
+    text-align: center;
+    margin: 10px auto;
+    outline: none;
+    border: 0.2px solid black;
+    width: 80%;
+    height: 5vh;
+}
+
+#modal button {
+    padding: 10px 20px;
+    display: block;
+    margin: auto;
+}
+
+#overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: 0.5;
+}
+
+
+
+
+
+button {
     font-family: 'Lato', sans-serif;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -57,35 +99,46 @@ a {
 }
 
 /*Navbar*/
-
-#navbar {
-    font-family: 'Lato', sans-serif;
-    font-size: 2em;
-    letter-spacing: 2px;
-    width: 95vw;
-    margin: 1vh auto;
-    background-color: var(--dark-color-a);
-    border-radius: 5px;
-    padding: 1vw;
-    color: #ffffff;
-    font-weight: 300;
+nav {
+    background: var(--light-color);
+    width: 100vw;
+    padding: 1rem 0;
+}
+nav h1 {
+    font-family: 'Roboto Mono', monospace;
+    display: inline;
+    margin-left: 10px;
+    font-size: 2rem;
 }
 
-#content {
-    margin-left: 1vw;
-    padding: 1vw;
-    width: 95vw;
+nav h3 {
+    display: inline;
+    margin: auto;
+    padding-right: 15px;
+
+}
+
+.rightSideContainer {
+    float: right;
     display: flex;
     justify-content: space-between;
+    margin-right: 10px;
 }
 
 /* Game Stuff */
 
+#content {
+    margin-top: 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 #gamefield {
     flex: 1;
-    min-height: 648px;
-    background-color: var(--dark-color-a);
+    height: 100%;
     border-radius: 5px;
+    margin-left: 1rem;
 }
 
 /* Chat Page */
@@ -93,7 +146,7 @@ a {
     flex: 1;
     background: var(--light-color);
     overflow: hidden;
-    
+    margin-right: 1rem;
 }
 
 .chat-header {
@@ -190,63 +243,12 @@ a {
     outline-color: rgb(165, 159, 156);
 }
 
-/* Join Page */
-.join-container {
-    max-width: 500px;
-    margin: 80px auto;
-    color: #fff;
-}
-
-.join-header {
-    text-align: center;
-    padding: 20px;
-    background: var(--dark-color-a);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
-
-.join-main {
-    padding: 30px 40px;
-    background: var(--dark-color-b);
-}
-
-.join-main p {
-    margin-bottom: 20px;
-}
-
-.join-main .form-control {
-    margin-bottom: 20px;
-}
-
-.join-main label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.join-main input[type='text'] {
-    color: rgb(0, 0, 0);
-    font-size: 16px;
-    padding: 5px;
-    height: 40px;
-    width: 100%;
-}
-
-.join-main select {
-    font-size: 16px;
-    padding: 5px;
-    height: 40px;
-    width: 100%;
-}
-
-.join-main .btn {
-    margin-top: 20px;
-    width: 100%;
-}
 
 /* ------------- Create grid ------------- */
 
 .gamefield {
-    width: 750px;
+    max-width: 750px;
+    min-width: 200px;
     display: grid;
     grid-template-columns: repeat(15, 50px);
     grid-template-rows: repeat(15, 50px);

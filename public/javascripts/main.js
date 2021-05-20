@@ -1,31 +1,33 @@
 const socket = io();
 
-document.getElementById('content').style.display = 'none';
-
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
 
+createGrid();
+
+function removeModal() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('modal').style.display = 'none';
+}
+
 // JOIN GAME, SEND USERNAME, PRINT GRID
 document.addEventListener('click', (evt) => {
   switch (evt.target.id) {
     case 'joinChat':
-      document.getElementById('content').style.display = 'flex';
-      document.getElementById('landingPage').style.display = 'none';
-
       const username = document.getElementById('username').value;
       socket.emit('joinGame', username);
-      createGrid();
+      removeModal();
       createBtns();
-    break;
+      break;
     case 'saveBtn':
       saveGame();
-    break;
+      break;
     case 'getGameBtn':
       getGame();
-    break;
-  };
+      break;
+  }
 });
 
 // Genereate the gamefield container and pixels 15x15
@@ -40,12 +42,6 @@ function createGrid() {
   // Where to insert the gamefield container
   gameContainer.insertAdjacentHTML('afterbegin', html);
 }
-
-// CREATE BTNS
-function createBtns() {
-  document.getElementById('btnsContainer').innerHTML = `<button id="saveBtn">Spara</button>
-  <button id="getGameBtn">Hämta</button>`
-};
 
 // GET ROOM AND USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
@@ -138,8 +134,6 @@ function outputUsers(users) {
     );
   }
 }
-
-
 
 async function saveGame() {
   const htmlGameState = document.getElementById('gamefield').outerHTML;
