@@ -11,18 +11,21 @@ var usersRouter = require('./routes/users');
 var app = express();
 const server = require('http').Server(app);
 const io = socketio(server);
+let gameStarted = false;
 
-mongoose.connect( "mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority", {
+mongoose.connect(
+    'mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
 
-useNewUrlParser: true,
+        useCreateIndex: true,
 
-useCreateIndex: true,
+        useFindAndModify: false,
 
-useFindAndModify: false,
-
-useUnifiedTopology: true,
-
-},() => console.log("connected to db"));
+        useUnifiedTopology: true,
+    },
+    () => console.log('connected to db')
+);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -68,10 +71,12 @@ const {
 const botName = 'Chattroboten';
 
 io.on('connection', (socket) => {
+    console.log('user connected', socket.id);
+
     // GET USER AND ROOM FROM USERS.JS
     socket.on('joinGame', (username) => {
         // console.log('username', username);
-        
+
         // PUSH USER TO USER-ARRAY
         const user = userJoin(socket.id, username);
 
@@ -102,6 +107,9 @@ io.on('connection', (socket) => {
         color.socketID = socket.id;
         socket.emit('playerColor', color);
 
+        // get the amount of colors taken and send it to the connected clients
+        getAmountOfPlayers();
+
         // Send a players color and pixel to the other players
         socket.on('addColorOnTarget', ({ id, color }) => {
             socket.broadcast.emit('addPixel', { id, color });
@@ -109,10 +117,14 @@ io.on('connection', (socket) => {
 
         // SEND ROOM AND USERS TO FRONTEND
         io.emit('roomUsers', {
-            users: getRoomUsers()
+            users: getRoomUsers(),
         });
     });
 
+    socket.on('startGame', () => {
+        io.emit('createGrid');
+        gameStarted = true;
+    });
     // LISTEN FOR CHAT MESSAGE
     socket.on('chatMessage', (msg) => {
         const user = getCurrentUser(socket.id);
@@ -126,6 +138,7 @@ io.on('connection', (socket) => {
         // REMOVE USER FROM ARRAY
         const user = userLeave(socket.id);
         disconnectUser(socket.id);
+        if (!gameStarted) getAmountOfPlayers();
         if (user) {
             io.emit(
                 'message',
@@ -134,7 +147,7 @@ io.on('connection', (socket) => {
 
             // SEND DISCONNECTED USER
             io.emit('roomUsers', {
-                users: getRoomUsers()
+                users: getRoomUsers(),
             });
         }
     });
@@ -146,6 +159,16 @@ function disconnectUser(id) {
     if (coloruser) {
         coloruser.socketID = '';
     }
+}
+
+function getAmountOfPlayers() {
+    // Get the amount of assigned colors (players)
+    let playersConnected = colors.filter(
+        (color) => color.socketID !== ''
+    ).length;
+
+    // send amount of players connected to all connected clients
+    return io.emit('playersConnected', playersConnected);
 }
 
 module.exports = { app: app, server: server };
