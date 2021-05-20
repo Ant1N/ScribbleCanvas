@@ -15,7 +15,7 @@ font-family: 'Roboto Mono', monospace; */
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -139,6 +139,7 @@ nav h3 {
     height: 100%;
     border-radius: 5px;
     margin-left: 1rem;
+    
 }
 
 /* Chat Page */
