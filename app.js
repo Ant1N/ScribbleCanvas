@@ -71,8 +71,6 @@ const {
 const botName = 'Chattroboten';
 
 io.on('connection', (socket) => {
-    console.log('user connected', socket.id);
-
     // GET USER AND ROOM FROM USERS.JS
     socket.on('joinGame', (username) => {
         // console.log('username', username);
