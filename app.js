@@ -37,7 +37,7 @@ app.use('/users', usersRouter);
 const colors = [
     {
         socketID: '',
-        color: 'blue',
+        color: 'black',
         player: 'Player 1',
     },
     {
