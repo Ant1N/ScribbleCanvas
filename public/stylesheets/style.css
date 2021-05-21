@@ -15,7 +15,7 @@ font-family: 'Roboto Mono', monospace; */
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -82,10 +82,6 @@ a {
     opacity: 0.5;
 }
 
-
-
-
-
 button {
     font-family: 'Lato', sans-serif;
     text-transform: uppercase;
@@ -133,12 +129,16 @@ nav h3 {
     display: flex;
     justify-content: space-between;
 }
-
+#game-container{
+    background-image:url(./pictures/Pizzabild.png);
+    background-size: cover;
+    margin-left: 1rem;
+}
 #gamefield {
+    opacity: 1;
     flex: 1;
     height: 100%;
     border-radius: 5px;
-    margin-left: 1rem;
 }
 
 /* Chat Page */
@@ -193,8 +193,6 @@ nav h3 {
 
 .chat-messages {
     padding: 30px;
-    min-height: 500px;
-    max-height: 500px;
     overflow-y: scroll;
 }
 
