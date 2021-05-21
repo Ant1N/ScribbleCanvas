@@ -248,8 +248,8 @@ nav h3 {
     max-width: 750px;
     min-width: 200px;
     display: grid;
-    grid-template-columns: repeat(15, 50px);
-    grid-template-rows: repeat(15, 50px);
+    grid-template-columns: repeat(15, 30px);
+    grid-template-rows: repeat(15, 30px);
     grid-area: gamefield;
     border: 1px solid black;
 }

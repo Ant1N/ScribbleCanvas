@@ -14,14 +14,19 @@ document.addEventListener('click', (evt) => {
     case 'joinChat':
       socket.emit('joinGame', username.value);
       removeModal();
+      getPic();
       displayUser();
       break;
     case 'saveBtn':
       saveGame();
       break;
     case 'getGameBtn':
+      // getGame();
       getGame();
       break;
+    case 'savePicToDB':
+      savePicToDB();
+    break;
   }
 });
 
@@ -92,6 +97,10 @@ function addColorOnPixel(color) {
 
         // Send the data to server for broadcast to the other players
         socket.emit('addColorOnTarget', pixelData);
+        
+        let sendPixelInfo = {id: e.target.id, color: color};
+
+        socket.emit('toPicArray', sendPixelInfo);
       }
     });
   });
@@ -155,6 +164,26 @@ async function saveGame() {
   console.log(result);
 }
 
+function savePicToDB() {
+  socket.emit('wantsPicArray', "click");
+
+  socket.on('sendArrayToServer', array => {
+    console.log("Denna ska skickas", array);
+
+    fetch('http://localhost:3000/savePic', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ array })
+    })
+    .then(resp => resp.json())
+    .then(answer => {
+      console.log(answer);
+    });
+  });
+};
+
 function getGame() {
   const gameField = document.getElementById('gamefield');
   fetch('http://localhost:3000/getGame')
@@ -165,3 +194,27 @@ function getGame() {
       addColorOnPixel(localStorage.getItem('playerColor'));
     });
 }
+
+const pics = [
+  {picId: 1, img: "images/"},
+  {picId: 2, img: "images/"},
+  {picId: 3, img: "images/"},
+  {picId: 4, img: "images/"},
+  {picId: 1, img: "images/"},
+];
+
+function getPic() {
+  fetch('http://localhost:3000/getPic')
+  .then((resp) => resp.json())
+  .then((data) => {
+    console.log("Id :", data.picId);
+    console.log("Facit :", data.picture);
+
+    for (pic in pics) {
+      if (pics[pic].picId == data.picId) {
+        console.log("Printa bild");
+        return;
+      };
+    };
+  });
+};
