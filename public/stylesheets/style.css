@@ -1,273 +1,267 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Roboto+Mono&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&family=Roboto+Mono&display=swap");
 /* font-family: 'Raleway', sans-serif;
 font-family: 'Roboto Mono', monospace; */
 :root {
-    --dark-color-a: rgba(30, 51, 80, 0.7);
-    --dark-color-b: rgba(53, 84, 119, 0.7);
-    --light-color: rgba(160, 204, 245, 0.6);
-    --success-color: #5cb85c;
-    --error-color: #ff6862;
+  --dark-color-a: rgba(30, 51, 80, 0.7);
+  --dark-color-b: rgba(53, 84, 119, 0.7);
+  --light-color: rgba(160, 204, 245, 0.6);
+  --success-color: #5cb85c;
+  --error-color: #ff6862;
 }
 
 /* general styling */
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    overflow-y: hidden;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 body {
-    background-color: #fcfcfc;
-    font-family: 'Raleway', sans-serif;
-    letter-spacing: 2px;
+  background-color: #fcfcfc;
+  font-family: "Raleway", sans-serif;
+  letter-spacing: 2px;
 }
 
 h1 {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* modal */
 
 #modal {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 30vw;
-    height: 18vh;
-    border: solid 1px #000;
-    background-color: #fff;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30vw;
+  height: 18vh;
+  border: solid 1px #000;
+  background-color: #fff;
 }
 
 #modal h2 {
-    text-align: center;
-    padding: 5px;
-    border-bottom: 1px solid black; 
-    border-width: 50%;
+  text-align: center;
+  padding: 5px;
+  border-bottom: 1px solid black;
+  border-width: 50%;
 }
 
 #modal input {
-    display: block;
-    text-align: center;
-    margin: 10px auto;
-    outline: none;
-    border: 0.2px solid black;
-    width: 80%;
-    height: 5vh;
+  display: block;
+  text-align: center;
+  margin: 10px auto;
+  outline: none;
+  border: 0.2px solid black;
+  width: 80%;
+  height: 5vh;
 }
 
 #modal button {
-    padding: 10px 20px;
-    display: block;
-    margin: auto;
+  padding: 10px 20px;
+  display: block;
+  margin: auto;
 }
 
 #overlay {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-    opacity: 0.5;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.5;
 }
 
-
-
-
-
 button {
-    font-family: 'Lato', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    padding: 8px 15px;
-    background: var(--light-color);
-    color: rgb(255, 255, 255);
-    border: 0;
-    font-size: 17px;
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  padding: 8px 15px;
+  background: var(--light-color);
+  color: rgb(255, 255, 255);
+  border: 0;
+  font-size: 17px;
 }
 
 /*Navbar*/
 nav {
-    background: var(--light-color);
-    width: 100vw;
-    padding: 1rem 0;
+  background: var(--light-color);
+  width: 100vw;
+  padding: 1rem 0;
 }
 nav h1 {
-    font-family: 'Roboto Mono', monospace;
-    display: inline;
-    margin-left: 10px;
-    font-size: 2rem;
+  font-family: "Roboto Mono", monospace;
+  display: inline;
+  margin-left: 10px;
+  font-size: 2rem;
 }
 
 nav h3 {
-    display: inline;
-    margin: auto;
-    padding-right: 15px;
-
+  display: inline;
+  margin: auto;
+  padding-right: 15px;
 }
 
 .rightSideContainer {
-    float: right;
-    display: flex;
-    justify-content: space-between;
-    margin-right: 10px;
+  float: right;
+  display: flex;
+  justify-content: space-between;
+  margin-right: 10px;
 }
 
 /* Game Stuff */
 
 #content {
-    margin-top: 1.5rem;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
-
+#game-container {
+  background-size: cover;
+  margin-left: 1rem;
+  background-position: center;
+}
 #gamefield {
-    flex: 1;
-    height: 100%;
-    border-radius: 5px;
-    margin-left: 1rem;
+  opacity: 1;
+  flex: 1;
+  border-radius: 5px;
 }
 
 /* Chat Page */
 .chat-container {
-    flex: 1;
-    background: var(--light-color);
-    overflow: hidden;
-    margin-right: 1rem;
+  flex: 1;
+  background: var(--light-color);
+  overflow: hidden;
+  margin-right: 1rem;
 }
 
 .chat-header {
-    font-family: 'Lato', sans-serif;
-    letter-spacing: 2px;
-    background: var(--dark-color-a);
-    color: #fff;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  font-family: "Lato", sans-serif;
+  letter-spacing: 2px;
+  background: var(--dark-color-a);
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .chat-main {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    min-height: 605px;
-
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  min-height: 605px;
 }
 
 .chat-sidebar {
-    background: var(--dark-color-b);
-    color: #fff;
-    padding: 20px 20px 60px;
-    overflow-y: scroll;
+  background: var(--dark-color-b);
+  color: #fff;
+  padding: 20px 20px 60px;
+  overflow-y: scroll;
 }
 
 .chat-sidebar h2 {
-    font-size: 20px;
-    background: var(--dark-color-b);
-    padding: 10px;
-    margin-bottom: 20px;
+  font-size: 20px;
+  background: var(--dark-color-b);
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 .chat-sidebar h3 {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .chat-sidebar ul li {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .chat-messages {
-    padding: 30px;
-    min-height: 500px;
-    max-height: 500px;
-    overflow-y: scroll;
+  padding: 30px;
+  overflow-y: scroll;
 }
 
 .chat-messages .message {
-    padding: 10px;
-    color: white;
-    margin-bottom: 15px;
-    background-color: var(--dark-color-b);
-    border-radius: 5px;
+  padding: 10px;
+  color: white;
+  margin-bottom: 15px;
+  background-color: var(--dark-color-b);
+  border-radius: 5px;
 }
 
 .chat-messages .message .meta {
-    font-size: 15px;
-    font-weight: bold;
-    color: rgb(158, 213, 245);
-    opacity: 0.9;
-    margin-bottom: 7px;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(158, 213, 245);
+  opacity: 0.9;
+  margin-bottom: 7px;
 }
 
 .uname-chat {
-    color: red;
+  color: red;
 }
 
 .chat-messages .message .meta span {
-    color: white;
+  color: white;
 }
 
 .chat-form-container {
-    padding: 20px 30px;
-    background-color: var(--dark-color-a);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  padding: 20px 30px;
+  background-color: var(--dark-color-a);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .chat-form-container form {
-    display: flex;
+  display: flex;
 }
 
-.chat-form-container input[type='text'] {
-    color: black;
-    font-size: 16px;
-    padding: 5px;
-    height: 40px;
-    flex: 1;
-    border: 0;
-    outline-color: rgb(165, 159, 156);
+.chat-form-container input[type="text"] {
+  color: black;
+  font-size: 16px;
+  padding: 5px;
+  height: 40px;
+  flex: 1;
+  border: 0;
+  outline-color: rgb(165, 159, 156);
 }
-
 
 /* ------------- Create grid ------------- */
 
 .gamefield {
-    max-width: 750px;
-    min-width: 200px;
-    display: grid;
-    grid-template-columns: repeat(15, 50px);
-    grid-template-rows: repeat(15, 50px);
-    grid-area: gamefield;
-    border: 1px solid black;
+  max-width: 750px;
+  min-width: 200px;
+  display: grid;
+  grid-template-columns: repeat(15, 50px);
+  grid-template-rows: repeat(15, 50px);
+  grid-area: gamefield;
+  border: 1px solid black;
 }
 
 .pixel {
-    border: 1px solid black;
+  border: 1px solid black;
 }
 
 /* --------------------------------------- */
 
 @media (max-width: 700px) {
-    .chat-main {
-        display: block;
-    }
+  .chat-main {
+    display: block;
+  }
 
-    .chat-sidebar {
-        display: none;
-    }
+  .chat-sidebar {
+    display: none;
+  }
 }
