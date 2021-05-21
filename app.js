@@ -11,7 +11,6 @@ var usersRouter = require('./routes/users');
 var app = express();
 const server = require('http').Server(app);
 const io = socketio(server);
-let gameStarted = false;
 
 mongoose.connect(
     'mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority',
@@ -121,7 +120,6 @@ io.on('connection', (socket) => {
 
     socket.on('startGame', () => {
         io.emit('createGrid');
-        gameStarted = true;
     });
     // LISTEN FOR CHAT MESSAGE
     socket.on('chatMessage', (msg) => {
@@ -136,7 +134,8 @@ io.on('connection', (socket) => {
         // REMOVE USER FROM ARRAY
         const user = userLeave(socket.id);
         disconnectUser(socket.id);
-        if (!gameStarted) getAmountOfPlayers();
+        getAmountOfPlayers();
+
         if (user) {
             io.emit(
                 'message',

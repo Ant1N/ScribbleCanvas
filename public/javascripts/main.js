@@ -4,6 +4,9 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
+const saveBtn = document.getElementById('saveBtn');
+const loadBtn = document.getElementById('getGameBtn');
+
 let color = ''; // will be updated with assigned color
 
 function removeModal() {
@@ -67,8 +70,12 @@ socket.on('playersConnected', (playerConnected) => {
     // else update how many players are connected x/4
     if (playerConnected === 4) {
         socket.emit('startGame');
+        saveBtn.hidden = false;
+        loadBtn.hidden = false;
     } else {
         gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
+        saveBtn.hidden = true;
+        loadBtn.hidden = true;
     }
 });
 
