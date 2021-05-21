@@ -72,7 +72,8 @@ socket.on('message', (message) => {
 });
 
 socket.on('playerColor', (data) => {
-  feature / waitForPlayers; // addColorOnPixel(data.color);
+  feature / waitForPlayers;
+  // addColorOnPixel(data.color);
   // localStorage.setItem('playerColor', data.color);
   color = data.color;
 });
@@ -130,118 +131,118 @@ function addColorOnPixel(color) {
       }
     });
   });
+}
 
-  // Add the color that other players clicked on
-  socket.on('addPixel', ({ id, color }) => {
-    document
-      .getElementById(id)
-      .setAttribute('style', `background-color: ${color}`);
-  });
+// Add the color that other players clicked on
+socket.on('addPixel', ({ id, color }) => {
+  document
+    .getElementById(id)
+    .setAttribute('style', `background-color: ${color}`);
+});
 
-  // SUBMIT MESSAGE TO SERVER
-  chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+// SUBMIT MESSAGE TO SERVER
+chatForm.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-    const msg = e.target.elements.msg.value;
+  const msg = e.target.elements.msg.value;
 
-    // SEND MESSAGE TO SERVER
-    socket.emit('chatMessage', msg);
+  // SEND MESSAGE TO SERVER
+  socket.emit('chatMessage', msg);
 
-    // CLEAR INPUT
-    e.target.elements.msg.value = '';
-    e.target.elements.msg.focus();
-  });
+  // CLEAR INPUT
+  e.target.elements.msg.value = '';
+  e.target.elements.msg.focus();
+});
 
-  // OUTPUT MESSAGE TO ALL USERS
-  function outputMessage(message) {
-    const div = document.createElement('div');
-    div.classList.add('message');
-    div.innerHTML = `
+// OUTPUT MESSAGE TO ALL USERS
+function outputMessage(message) {
+  const div = document.createElement('div');
+  div.classList.add('message');
+  div.innerHTML = `
     <p class="meta">${message.userName} <span>${message.time}</span></p>
     <p class="text">
         ${message.text}
     </p>`;
-    document.querySelector('.chat-messages').appendChild(div);
+  document.querySelector('.chat-messages').appendChild(div);
+}
+
+function outputUsers(users) {
+  userList.innerHTML = '';
+
+  for (user in users) {
+    userList.insertAdjacentHTML(
+      'beforeend',
+      `<li>${users[user].username}</li>`
+    );
   }
+}
 
-  function outputUsers(users) {
-    userList.innerHTML = '';
+async function saveGame() {
+  const htmlGameState = document.getElementById('gamefield').outerHTML;
+  // console.log(htmlGameState);
+  const response = await fetch('http://localhost:3000/save', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ htmlGameState }),
+  });
+  const result = await response.json();
+  console.log(result);
+}
 
-    for (user in users) {
-      userList.insertAdjacentHTML(
-        'beforeend',
-        `<li>${users[user].username}</li>`
-      );
-    }
-  }
+function savePicToDB() {
+  socket.emit('wantsPicArray', 'click');
 
-  async function saveGame() {
-    const htmlGameState = document.getElementById('gamefield').outerHTML;
-    // console.log(htmlGameState);
-    const response = await fetch('http://localhost:3000/save', {
+  socket.on('sendArrayToServer', (array) => {
+    console.log('Denna ska skickas', array);
+
+    fetch('http://localhost:3000/savePic', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ htmlGameState }),
-    });
-    const result = await response.json();
-    console.log(result);
-  }
-
-  function savePicToDB() {
-    socket.emit('wantsPicArray', 'click');
-
-    socket.on('sendArrayToServer', (array) => {
-      console.log('Denna ska skickas', array);
-
-      fetch('http://localhost:3000/savePic', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ array }),
-      })
-        .then((resp) => resp.json())
-        .then((answer) => {
-          console.log(answer);
-        });
-    });
-  }
-
-  function getGame() {
-    const gameField = document.getElementById('gamefield');
-    fetch('http://localhost:3000/getGame')
+      body: JSON.stringify({ array }),
+    })
       .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data.gameboard);
-        gameField.outerHTML = data.gameboard;
-        // addColorOnPixel(localStorage.getItem('playerColor'));
-        addColorOnPixel(color);
+      .then((answer) => {
+        console.log(answer);
       });
-  }
+  });
+}
 
-  const pics = [
-    { picId: 1, img: 'images/' },
-    { picId: 2, img: 'images/' },
-    { picId: 3, img: 'images/' },
-    { picId: 4, img: 'images/' },
-    { picId: 1, img: 'images/' },
-  ];
+function getGame() {
+  const gameField = document.getElementById('gamefield');
+  fetch('http://localhost:3000/getGame')
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log(data.gameboard);
+      gameField.outerHTML = data.gameboard;
+      // addColorOnPixel(localStorage.getItem('playerColor'));
+      addColorOnPixel(color);
+    });
+}
 
-  function getPic() {
-    fetch('http://localhost:3000/getPic')
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log('Id :', data.picId);
-        console.log('Facit :', data.picture);
+const pics = [
+  { picId: 1, img: 'images/' },
+  { picId: 2, img: 'images/' },
+  { picId: 3, img: 'images/' },
+  { picId: 4, img: 'images/' },
+  { picId: 1, img: 'images/' },
+];
 
-        for (pic in pics) {
-          if (pics[pic].picId == data.picId) {
-            console.log('Printa bild');
-            return;
-          }
+function getPic() {
+  fetch('http://localhost:3000/getPic')
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log('Id :', data.picId);
+      console.log('Facit :', data.picture);
+
+      for (pic in pics) {
+        if (pics[pic].picId == data.picId) {
+          console.log('Printa bild');
+          return;
         }
-      });
-  }
+      }
+    });
 }
