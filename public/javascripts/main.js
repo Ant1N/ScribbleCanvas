@@ -19,11 +19,13 @@ document.addEventListener('click', (evt) => {
       const username = document.getElementById('username').value;
       socket.emit('joinGame', username);
       removeModal();
+      getPic();
       break;
     case 'saveBtn':
       saveGame();
       break;
     case 'getGameBtn':
+      // getGame();
       getGame();
       break;
     case 'savePicToDB':
@@ -155,16 +157,6 @@ async function saveGame() {
   console.log(result);
 }
 
-
-
-// socket.on('sendArrayToServer', (array) => {
-  
-//   document.getElementById('savePicToDB').addEventListener('click', () => {
-//     console.log("Här", array);
-    
-//   });
-// });
-
 function savePicToDB() {
   socket.emit('wantsPicArray', "click");
 
@@ -177,6 +169,10 @@ function savePicToDB() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ array })
+    })
+    .then(resp => resp.json())
+    .then(answer => {
+      console.log(answer);
     });
   });
 };
@@ -191,3 +187,27 @@ function getGame() {
       addColorOnPixel(localStorage.getItem("playerColor"));
     });
 }
+
+const pics = [
+  {picId: 1, img: "images/"},
+  {picId: 2, img: "images/"},
+  {picId: 3, img: "images/"},
+  {picId: 4, img: "images/"},
+  {picId: 1, img: "images/"},
+];
+
+function getPic() {
+  fetch('http://localhost:3000/getPic')
+  .then((resp) => resp.json())
+  .then((data) => {
+    console.log("Id :", data.picId);
+    console.log("Facit :", data.picture);
+
+    for (pic in pics) {
+      if (pics[pic].picId == data.picId) {
+        console.log("Printa bild");
+        return;
+      };
+    };
+  });
+};
