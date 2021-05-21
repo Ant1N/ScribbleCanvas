@@ -66,7 +66,7 @@ socket.on('message', (message) => {
 socket.on('playerColor', (data) => {
   addColorOnPixel(data.color);
   usernameDisplay.style.color = data.color;
-  localStorage.setItem("playerColor", data.color);
+  localStorage.setItem('playerColor', data.color);
 });
 
 // Send the players color and clicked pixel-ID to server for broadcasting
@@ -162,6 +162,6 @@ function getGame() {
     .then((data) => {
       console.log(data.gameboard);
       gameField.outerHTML = data.gameboard;
-      addColorOnPixel(localStorage.getItem("playerColor"));
+      addColorOnPixel(localStorage.getItem('playerColor'));
     });
 }

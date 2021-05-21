@@ -129,13 +129,16 @@ nav h3 {
     display: flex;
     justify-content: space-between;
 }
-
+#game-container{
+    background-image:url(./pictures/Pizzabild.png);
+    background-size: cover;
+    margin-left: 1rem;
+}
 #gamefield {
+    opacity: 1;
     flex: 1;
     height: 100%;
     border-radius: 5px;
-    margin-left: 1rem;
-    
 }
 
 /* Chat Page */
