@@ -4,9 +4,13 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
-const username = document.getElementById('username');
 
 createGrid();
+const saveBtn = document.getElementById('saveBtn');
+const loadBtn = document.getElementById('getGameBtn');
+const username = document.getElementById('username');
+
+let color = ''; // will be updated with assigned color
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
 document.addEventListener('click', (evt) => {
@@ -26,7 +30,7 @@ document.addEventListener('click', (evt) => {
       break;
     case 'savePicToDB':
       savePicToDB();
-    break;
+      break;
   }
 });
 
@@ -52,7 +56,8 @@ function createGrid() {
   html += '</div>';
 
   // Where to insert the gamefield container
-  gameContainer.insertAdjacentHTML('afterbegin', html);
+  // gameContainer.insertAdjacentHTML('afterbegin', html);
+  gameContainer.innerHTML = html;
 }
 
 // GET ROOM AND USERS AND PRINT IN CHAT
@@ -70,6 +75,30 @@ socket.on('message', (message) => {
 
 socket.on('playerColor', (data) => {
   addColorOnPixel(data.color);
+  // addColorOnPixel(data.color);
+  // localStorage.setItem('playerColor', data.color);
+  color = data.color;
+});
+
+// wher a player join the game
+socket.on('playersConnected', (playerConnected) => {
+  // if 4 players have joined the game, the start it for all players
+  // else update how many players are connected x/4
+  if (playerConnected === 4) {
+    socket.emit('startGame');
+    saveBtn.hidden = false;
+    loadBtn.hidden = false;
+  } else {
+    gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
+    saveBtn.hidden = true;
+    loadBtn.hidden = true;
+  }
+});
+
+// Generate the grid for all players, see emit (after startGame)
+socket.on('createGrid', (data) => {
+  createGrid();
+  addColorOnPixel(color);
   usernameDisplay.style.color = data.color;
   localStorage.setItem('playerColor', data.color);
 });
@@ -192,6 +221,31 @@ function getGame() {
       console.log(data.gameboard);
       gameField.outerHTML = data.gameboard;
       addColorOnPixel(localStorage.getItem('playerColor'));
+      // addColorOnPixel(localStorage.getItem('playerColor'));
+    });
+}
+
+const pics = [
+  { picId: 1, img: 'images/' },
+  { picId: 2, img: 'images/' },
+  { picId: 3, img: 'images/' },
+  { picId: 4, img: 'images/' },
+  { picId: 1, img: 'images/' },
+];
+
+function getPic() {
+  fetch('http://localhost:3000/getPic')
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log('Id :', data.picId);
+      console.log('Facit :', data.picture);
+
+      for (pic in pics) {
+        if (pics[pic].picId == data.picId) {
+          console.log('Printa bild');
+          return;
+        }
+      }
     });
 }
 
