@@ -151,6 +151,11 @@ io.on("connection", (socket) => {
   socket.on("wantsPicArray", (msg) => {
     socket.emit("sendArrayToServer", picArray);
   });
+
+  socket.on('picUrl', picUrl => {
+    console.log(picUrl);
+    io.emit('picBackground', picUrl);
+  });
 });
 
 // Finds the players color on their socket id and removes the ID

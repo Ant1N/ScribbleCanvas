@@ -22,11 +22,13 @@ document.addEventListener("click", (evt) => {
       saveGame();
       break;
     case "getGameBtn":
-      // getGame();
       getGame();
       break;
     case "savePicToDB":
       savePicToDB();
+      break;
+    case "startGame":
+      getPic();
       break;
   }
 });
@@ -81,7 +83,7 @@ socket.on("playersConnected", (playerConnected) => {
   // if 4 players have joined the game, the start it for all players
   // else update how many players are connected x/4
   if (playerConnected === 4) {
-    socket.emit("startGame", getPic());
+    socket.emit("startGame");
     saveBtn.hidden = false;
     loadBtn.hidden = false;
   } else {
@@ -97,7 +99,7 @@ socket.on("createGrid", (data) => {
   addColorOnPixel(color);
   usernameDisplay.style.color = color;
   let backgroundGamePic = document.getElementById("game-container");
-  backgroundGamePic.style.backgroundImage = data;
+  // backgroundGamePic.style.backgroundImage = data;
   //localStorage.setItem("playerColor", data.color);
 });
 
@@ -237,12 +239,20 @@ function getPic() {
     .then((data) => {
       console.log("Id :", data.picId);
       console.log("Facit :", data.picture);
-      //let backgroundGamePic = document.getElementById("game-container");
       for (pic in pics) {
         if (pics[pic].picId == data.picId) {
-          //backgroundGamePic.style.backgroundImage = `url(${pics[pic].img})`;
-          return `url(${pics[pic].img})`;
-        }
-      }
-    });
-}
+          let sendUrl = `url(${pics[pic].img})`;
+          socket.emit('picUrl', sendUrl);
+        };
+      };
+  });
+};
+
+socket.on('picBackground', url => {
+  printBackgroundPic(url);
+});
+
+function printBackgroundPic(url) {
+  console.log("Bakgrunden ska vara", url);
+  document.getElementById('game-container').style.backgroundImage = url;
+};
