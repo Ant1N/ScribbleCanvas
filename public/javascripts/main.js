@@ -4,22 +4,17 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
 const gameContainer = document.getElementById('game-container');
+const username = document.getElementById('username');
 
 createGrid();
-
-function removeModal() {
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('modal').style.display = 'none';
-}
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
 document.addEventListener('click', (evt) => {
   switch (evt.target.id) {
     case 'joinChat':
-      const username = document.getElementById('username').value;
-      socket.emit('joinGame', username);
+      socket.emit('joinGame', username.value);
       removeModal();
-      createBtns();
+      displayUser();
       break;
     case 'saveBtn':
       saveGame();
@@ -29,6 +24,18 @@ document.addEventListener('click', (evt) => {
       break;
   }
 });
+
+//Modal function
+function removeModal() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('modal').style.display = 'none';
+}
+
+//Display username function
+function displayUser() {
+  const usernameDisplay = document.getElementById('usernameDisplay');
+  usernameDisplay.innerHTML = username.value;
+}
 
 // Genereate the gamefield container and pixels 15x15
 function createGrid() {
@@ -58,13 +65,12 @@ socket.on('message', (message) => {
 
 socket.on('playerColor', (data) => {
   addColorOnPixel(data.color);
+  usernameDisplay.style.color = data.color;
   localStorage.setItem("playerColor", data.color);
-  // console.log(data);
 });
 
 // Send the players color and clicked pixel-ID to server for broadcasting
 function addColorOnPixel(color) {
-  // console.log('color:', color);
   // Get your assigned color
   // let color = document.querySelector('.colorbox').id;
 
