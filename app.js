@@ -39,7 +39,7 @@ app.use('/users', usersRouter);
 const colors = [
     {
         socketID: '',
-        color: 'blue',
+        color: 'black',
         player: 'Player 1',
     },
     {
@@ -68,8 +68,10 @@ const {
 } = require('./utils/users.js');
 
 const botName = 'Chattroboten';
+const picArray = [];
 
 io.on('connection', (socket) => {
+
     // GET USER AND ROOM FROM USERS.JS
     socket.on('joinGame', (username) => {
         // console.log('username', username);
@@ -147,6 +149,14 @@ io.on('connection', (socket) => {
                 users: getRoomUsers(),
             });
         }
+    });
+
+    socket.on('toPicArray', pushToPicArray => {
+        picArray.push(pushToPicArray);
+    })
+
+    socket.on('wantsPicArray', msg => {
+        socket.emit('sendArrayToServer', picArray);
     });
 });
 
