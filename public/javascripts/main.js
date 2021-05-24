@@ -216,19 +216,19 @@ function savePicToDB() {
   socket.emit("wantsPicArray", "click");
 
   socket.on("sendArrayToServer", (array) => {
-    console.log("Klick: ", array);
+    console.log("Denna ska skickas", array);
 
-    // fetch("http://localhost:3000/savePic", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ array }),
-    // })
-    //   .then((resp) => resp.json())
-    //   .then((answer) => {
-    //     console.log(answer);
-    //   });
+    fetch("http://localhost:3000/savePic", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ array }),
+    })
+      .then((resp) => resp.json())
+      .then((answer) => {
+        console.log(answer);
+      });
   });
 }
 
