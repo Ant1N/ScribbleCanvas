@@ -1,220 +1,212 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const socketio = require('socket.io');
-const mongoose = require('mongoose');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const Pic = require('./schemas/picSchema.js');
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+const socketio = require("socket.io");
+const mongoose = require("mongoose");
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+const Pic = require("./schemas/picSchema.js");
 var app = express();
-const server = require('http').Server(app);
+const server = require("http").Server(app);
 const io = socketio(server);
 
 mongoose.connect(
-    'mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority',
-    {
-        useNewUrlParser: true,
+  "mongodb+srv://limpanhur:gnaget123@cluster0.pvvp6.mongodb.net/ScribbleCanvas?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
 
-        useCreateIndex: true,
+    useCreateIndex: true,
 
-        useFindAndModify: false,
+    useFindAndModify: false,
 
-        useUnifiedTopology: true,
-    },
-    () => console.log('connected to db')
+    useUnifiedTopology: true,
+  },
+  () => console.log("connected to db")
 );
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 
 // Array of colors avaiable in the game
 const colors = [
-    {
-        socketID: '',
-        color: 'black',
-        player: 'Player 1',
-    },
-    {
-        socketID: '',
-        color: 'red',
-        player: 'Player 2',
-    },
-    {
-        socketID: '',
-        color: 'yellow',
-        player: 'Player 3',
-    },
-    {
-        socketID: '',
-        color: 'green',
-        player: 'Player 4',
-    },
+  {
+    socketID: "",
+    color: "black",
+    player: "Player 1",
+  },
+  {
+    socketID: "",
+    color: "red",
+    player: "Player 2",
+  },
+  {
+    socketID: "",
+    color: "yellow",
+    player: "Player 3",
+  },
+  {
+    socketID: "",
+    color: "green",
+    player: "Player 4",
+  },
 ];
 
-const formatMessage = require('./utils/messages.js');
+const formatMessage = require("./utils/messages.js");
 const {
-    userJoin,
-    getCurrentUser,
-    userLeave,
-    getRoomUsers,
-} = require('./utils/users.js');
+  userJoin,
+  getCurrentUser,
+  userLeave,
+  getRoomUsers,
+} = require("./utils/users.js");
 
-const botName = 'Chattroboten';
+const botName = "Chattroboten";
 const picArray = [];
 
-io.on('connection', (socket) => {
-    // GET USER AND ROOM FROM USERS.JS
-    socket.on('joinGame', (username) => {
-        // console.log('username', username);
+io.on("connection", (socket) => {
+  // GET USER AND ROOM FROM USERS.JS
+  socket.on("joinGame", (username) => {
+    // console.log('username', username);
 
-        // PUSH USER TO USER-ARRAY
-        const user = userJoin(socket.id, username);
+    // PUSH USER TO USER-ARRAY
+    const user = userJoin(socket.id, username);
 
-        // WELCOME CURRENT USER
-        // EMIT = SEND TO CURRENT USER
-        socket.emit(
-            'message',
-            formatMessage(botName, 'Välkommen till chatten!')
-        );
+    // WELCOME CURRENT USER
+    // EMIT = SEND TO CURRENT USER
+    socket.emit("message", formatMessage(botName, "Välkommen till chatten!"));
 
-        // WHEN A USER CONNECT
-        // BROADCAST = SEND TO ALL USERS
-        socket.broadcast.emit(
-            'message',
-            formatMessage(
-                botName,
-                `${user.username} har anslutit till chatten!`
-            )
-        );
+    // WHEN A USER CONNECT
+    // BROADCAST = SEND TO ALL USERS
+    socket.broadcast.emit(
+      "message",
+      formatMessage(botName, `${user.username} har anslutit till chatten!`)
+    );
 
-        // Get the first available color that hasn't a socket id assigned
-        let color = colors.find((color) => color.socketID === '');
+    // Get the first available color that hasn't a socket id assigned
+    let color = colors.find((color) => color.socketID === "");
 
-        // If the are no available colors then emit: maxplayers
-        if (!color) return socket.emit('maxplayers');
+    // If the are no available colors then emit: maxplayers
+    if (!color) return socket.emit("maxplayers");
 
-        // Assing a players socket.id to the color and send it to the player
-        color.socketID = socket.id;
-        socket.emit('playerColor', color);
+    // Assing a players socket.id to the color and send it to the player
+    color.socketID = socket.id;
+    socket.emit("playerColor", color);
 
-        // get the amount of colors taken and send it to the connected clients
-        if (getAmountOfPlayers() === 2) {
-            console.log('lets play');
-            // socket.on('startGame', () => {
-            //  let background = getBackground();
-            // console.log('background', background);
+    // get the amount of colors taken and send it to the connected clients
+    if (getAmountOfPlayers() === 2) {
+      console.log("lets play");
+      // socket.on('startGame', () => {
+      //  let background = getBackground();
+      // console.log('background', background);
 
-            startGame();
-            // io.emit('playersConnected', getAmountOfPlayers());
+      startGame();
+      // io.emit('playersConnected', getAmountOfPlayers());
 
-            // });
-        } else {
-            io.emit('waitForPlayers', getAmountOfPlayers());
-        }
+      // });
+    } else {
+      io.emit("waitForPlayers", getAmountOfPlayers());
+    }
 
-        // Send a players color and pixel to the other players
-        socket.on('addColorOnTarget', ({ id, color }) => {
-            socket.broadcast.emit('addPixel', { id, color });
-        });
-
-        // SEND ROOM AND USERS TO FRONTEND
-        io.emit('roomUsers', {
-            users: getRoomUsers(),
-        });
+    // Send a players color and pixel to the other players
+    socket.on("addColorOnTarget", ({ id, color }) => {
+      socket.broadcast.emit("addPixel", { id, color });
     });
 
-    // LISTEN FOR CHAT MESSAGE
-    socket.on('chatMessage', (msg) => {
-        const user = getCurrentUser(socket.id);
-
-        // SEND MESSAGE TO FRONTEND
-        io.emit('message', formatMessage(user.username, msg));
+    // SEND ROOM AND USERS TO FRONTEND
+    io.emit("roomUsers", {
+      users: getRoomUsers(),
     });
+  });
 
-    socket.on('loadGame', (gameboard) => {
-        console.log('gameboard', gameboard);
-        socket.broadcast.emit('loadGameboard', gameboard);
-    });
+  // LISTEN FOR CHAT MESSAGE
+  socket.on("chatMessage", (msg) => {
+    const user = getCurrentUser(socket.id);
 
-    // WHEN A USER DISCONNECT
-    socket.on('disconnect', () => {
-        // REMOVE USER FROM ARRAY
-        const user = userLeave(socket.id);
-        disconnectUser(socket.id);
-        io.emit('waitForPlayers', getAmountOfPlayers());
+    // SEND MESSAGE TO FRONTEND
+    io.emit("message", formatMessage(user.username, msg));
+  });
 
-        if (user) {
-            io.emit(
-                'message',
-                formatMessage(botName, `${user.username} har lämnat chatten.`)
-            );
+  socket.on("loadGame", (gameboard) => {
+    console.log("gameboard", gameboard);
+    socket.broadcast.emit("loadGameboard", gameboard);
+  });
 
-            // SEND DISCONNECTED USER
-            io.emit('roomUsers', {
-                users: getRoomUsers(),
-            });
-        }
-    });
+  // WHEN A USER DISCONNECT
+  socket.on("disconnect", () => {
+    // REMOVE USER FROM ARRAY
+    const user = userLeave(socket.id);
+    disconnectUser(socket.id);
+    io.emit("waitForPlayers", getAmountOfPlayers());
 
-    socket.on('toPicArray', (pushToPicArray) => {
-        picArray.push(pushToPicArray);
-    });
+    if (user) {
+      io.emit(
+        "message",
+        formatMessage(botName, `${user.username} har lämnat chatten.`)
+      );
 
-    socket.on('wantsPicArray', (msg) => {
-        socket.emit('sendArrayToServer', picArray);
-    });
+      // SEND DISCONNECTED USER
+      io.emit("roomUsers", {
+        users: getRoomUsers(),
+      });
+    }
+  });
+
+  socket.on("toPicArray", (pushToPicArray) => {
+    picArray.push(pushToPicArray);
+  });
+
+  socket.on("wantsPicArray", (msg) => {
+    socket.emit("sendArrayToServer", picArray);
+  });
 });
 
 // Finds the players color on their socket id and removes the ID
 function disconnectUser(id) {
-    let coloruser = colors.find((color) => color.socketID === id);
-    if (coloruser) {
-        coloruser.socketID = '';
-    }
+  let coloruser = colors.find((color) => color.socketID === id);
+  if (coloruser) {
+    coloruser.socketID = "";
+  }
 }
 
 function getAmountOfPlayers() {
-    // Get the amount of assigned colors (players)
-    let playersConnected = colors.filter(
-        (color) => color.socketID !== ''
-    ).length;
+  // Get the amount of assigned colors (players)
+  let playersConnected = colors.filter((color) => color.socketID !== "").length;
 
-    // send amount of players connected to all connected clients
-    // return io.emit('playersConnected', playersConnected);
-    return playersConnected;
+  // send amount of players connected to all connected clients
+  // return io.emit('playersConnected', playersConnected);
+  return playersConnected;
 }
 
 async function startGame() {
-    const backgrounds = [
-        [{ picId: 1, url: '../stylesheets/pictures/pizza.png' }],
-        [{ picId: 2, url: '../stylesheets/pictures/Mario.png' }],
-        [{ picId: 3, url: '../stylesheets/pictures/emoji.png' }],
-        [{ picId: 4, url: '../stylesheets/pictures/hjarta.png' }],
-        //{ picId: 1, img: 'images/' },
-    ];
+  const backgrounds = [
+    [{ picId: 1, url: "../stylesheets/pictures/pizza.png" }],
+    [{ picId: 2, url: "../stylesheets/pictures/Mario.png" }],
+    [{ picId: 3, url: "../stylesheets/pictures/emoji.png" }],
+    [{ picId: 4, url: "../stylesheets/pictures/hjarta.png" }],
+    [{ picId: 5, url: "../stylesheets/pictures/burger.png" }],
+  ];
 
-    // HÄR VILL VI HÄMTA EN BILD RANDOM
-    let randomBetween1and5 = Math.floor(Math.random() * 3);
+  // HÄR VILL VI HÄMTA EN BILD RANDOM
+  let randomBetween1and5 = Math.floor(Math.random() * 4);
 
-    // console.log('random', randomBetween1and5);
-    const randomBackground = backgrounds[randomBetween1and5][0];
-    // console.log('picid', piccc.picId);
+  // console.log('random', randomBetween1and5);
+  const randomBackground = backgrounds[randomBetween1and5][0];
+  // console.log('picid', piccc.picId);
 
-    io.emit('startGame', randomBackground.url);
+  io.emit("startGame", randomBackground.url);
 
-    //TODO: fetch answer and correct
-    // Find correct answer from database
-    // const data = await Pic.findOne({
-    //     picId: backgrounds.picId,
-    // });
-    // console.log('data from db', data);
+  //TODO: fetch answer and correct
+  // Find correct answer from database
+  // const data = await Pic.findOne({
+  //     picId: backgrounds.picId,
+  // });
+  // console.log('data from db', data);
 }
 
 module.exports = { app: app, server: server };
