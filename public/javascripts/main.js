@@ -30,7 +30,7 @@ document.addEventListener('click', (evt) => {
             savePicToDB();
             break;
         case 'startBtn':
-            socket.emit('startGame');
+            socket.emit('letsPlay');
             let timedCheck = setTimeout(timer, 60000);
             break;
     }
@@ -113,10 +113,6 @@ socket.on('waitForPlayers', (playerConnected) => {
 socket.on('startGameClick', () => {
     startBtn.hidden = false;
     //localStorage.setItem("playerColor", data.color);
-});
-
-startBtn.addEventListener('click', () => {
-    socket.emit('letsPlay');
 });
 
 socket.on('startGame', (background) => {
