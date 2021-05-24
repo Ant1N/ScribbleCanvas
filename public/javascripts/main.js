@@ -69,7 +69,8 @@ function createGrid() {
     let html = '<div class="gamefield" id="gamefield">';
 
     for (let i = 0; i < 225; i++) {
-        html += `<div class="pixel" id="${i}" style="background-color:''";></div>`;
+        // style="background-color:''";
+        html += `<div class="pixel" id="${i}"></div>`;
     }
     html += '</div>';
 
@@ -138,7 +139,8 @@ function addColorOnPixel(color) {
             // If pixel doesn't have an inline background-color style
             // Then set color (so you can't change another players pixel)
             // console.log('clicking pixel');
-            if (e.target.getAttribute('style') === "background-color:''") {
+            // === "background-color:''"
+            if (!e.target.getAttribute('style')) {
                 // Set the pixel-color for the player
                 e.target.setAttribute('style', `background-color:${color}`);
 
@@ -157,27 +159,27 @@ function addColorOnPixel(color) {
             }
         });
 
-        pixel.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            if (
-                document.getElementById(e.target.id).style.backgroundColor ===
-                color
-            ) {
-                e.target.setAttribute('style', `background-color:''`);
-                // Save the pixel information in an object to send
-                let pixelData = {
-                    id: e.target.id,
-                    color: "''",
-                };
+        // pixel.addEventListener('contextmenu', (e) => {
+        //     e.preventDefault();
+        //     if (
+        //         document.getElementById(e.target.id).style.backgroundColor ===
+        //         color
+        //     ) {
+        //         e.target.setAttribute('style', `background-color:''`);
+        //         // Save the pixel information in an object to send
+        //         let pixelData = {
+        //             id: e.target.id,
+        //             color: "''",
+        //         };
 
-                // Send the data to server for broadcast to the other players
-                socket.emit('addColorOnTarget', pixelData);
+        //         // Send the data to server for broadcast to the other players
+        //         socket.emit('addColorOnTarget', pixelData);
 
-                let sendPixelInfo = { id: e.target.id, color: color };
+        //         let sendPixelInfo = { id: e.target.id, color: color };
 
-                socket.emit('toPicArray', sendPixelInfo);
-            }
-        });
+        //         socket.emit('toPicArray', sendPixelInfo);
+        //     }
+        // });
     });
 }
 
@@ -261,30 +263,50 @@ function savePicToDB() {
     });
 }
 
+let currentPicId;
 
+socket.on('correctGame', picId => {
+  currentPicId = picId;
+});
 
 function correctGame() {
   socket.emit('wantsPicArray');
 
-  socket.on('correctGame', picId => {
-    console.log(picId);
-  });
+  console.log(currentPicId);
+  let sendPicId = currentPicId;
+  let correctAnswers = 0;
 
   socket.on('sendArrayToServer', (array) => {
-      console.log('Det här är våra klick', array);
+    console.log('Det här är våra klick', array);
 
-      // fetch('http://localhost:3000/getFacit', {
-      //     method: 'POST',
-      //     headers: {
-      //         'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({ array }),
-      // })
-      //     .then((resp) => resp.json())
-      //     .then((answer) => {
-      //         console.log(answer);
-      //     });
+    fetch('http://localhost:3000/getSolution', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ sendPicId }),
+    })
+    .then((resp) => resp.json())
+    .then((answer) => {
+        console.log("Solution: ", answer);
+
+        
+        for (click in array) {
+          for (i in answer) {
+            if (array[click].id == answer[i].id && array[click].color == answer[i].color) {
+              correctAnswers++;
+            }
+          }
+        }
+
+        let correctAnswerPercent = correctAnswers/225 * 100;
+        let corAnsPer = correctAnswerPercent.toFixed(2);
+        console.log(correctAnswers);
+        console.log(corAnsPer);
+    });
+
   });
+  
 }
 
 function getGame() {
