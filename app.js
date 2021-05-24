@@ -110,6 +110,7 @@ io.on('connection', (socket) => {
             // console.log('background', background);
 
             // io.emit('playersConnected', getAmountOfPlayers());
+            io.emit('waitForPlayers', getAmountOfPlayers());
             io.emit('startGameClick');
             // });
         } else {
