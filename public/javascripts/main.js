@@ -35,12 +35,6 @@ document.addEventListener("click", (evt) => {
   }
 });
 
-//timer functionality
-
-// document.getElementById("startBtn").addEventListener("click", function () {
-//   startTimer();
-// });
-
 function startTimer() {
   var incomeTicker = 60;
   setInterval(function () {
@@ -110,79 +104,79 @@ socket.on("waitForPlayers", (playerConnected) => {
   saveBtn.hidden = true;
   loadBtn.hidden = true;
   startBtn.hidden = true;
-});
 
-// Generate the grid for all players, see emit (after startGame)
-socket.on("startGameClick", () => {
-  startBtn.hidden = false;
-  loadBtn.hidden = false;
-  //localStorage.setItem("playerColor", data.color);
-});
-
-socket.on("startGame", (background) => {
-  createGrid();
-  addColorOnPixel(color);
-  usernameDisplay.style.backgroundColor = color;
-  document.getElementById(
-    "gamefield"
-  ).style.backgroundImage = `url(${background})`;
-  saveBtn.hidden = false;
-});
-
-// Send the players color and clicked pixel-ID to server for broadcasting
-function addColorOnPixel(color) {
-  // Get your assigned color
-  // let color = document.querySelector('.colorbox').id;
-
-  // Add addEventListener on each pixel
-  document.querySelectorAll(".pixel").forEach((pixel) => {
-    pixel.addEventListener("click", (e) => {
-      // If pixel doesn't have an inline background-color style
-      // Then set color (so you can't change another players pixel)
-      // console.log('clicking pixel');
-      // === "background-color:''"
-      if (!e.target.getAttribute("style")) {
-        // Set the pixel-color for the player
-        e.target.setAttribute("style", `background-color:${color}`);
-
-        // Save the pixel information in an object to send
-        let pixelData = {
-          id: e.target.id,
-          color,
-        };
-
-        // Send the data to server for broadcast to the other players
-        socket.emit("addColorOnTarget", pixelData);
-
-        let sendPixelInfo = { id: e.target.id, color: color };
-
-        socket.emit("toPicArray", sendPixelInfo);
-      }
-    });
-
-    // pixel.addEventListener('contextmenu', (e) => {
-    //     e.preventDefault();
-    //     if (
-    //         document.getElementById(e.target.id).style.backgroundColor ===
-    //         color
-    //     ) {
-    //         e.target.setAttribute('style', `background-color:''`);
-    //         // Save the pixel information in an object to send
-    //         let pixelData = {
-    //             id: e.target.id,
-    //             color: "''",
-    //         };
-
-    //         // Send the data to server for broadcast to the other players
-    //         socket.emit('addColorOnTarget', pixelData);
-
-    //         let sendPixelInfo = { id: e.target.id, color: color };
-
-    //         socket.emit('toPicArray', sendPixelInfo);
-    //     }
-    // });
+  // Generate the grid for all players, see emit (after startGame)
+  socket.on("startGameClick", () => {
+    startBtn.hidden = false;
+    loadBtn.hidden = false;
+    //localStorage.setItem("playerColor", data.color);
   });
-}
+
+  socket.on("startGame", (background) => {
+    createGrid();
+    addColorOnPixel(color);
+    usernameDisplay.style.backgroundColor = color;
+    document.getElementById(
+      "gamefield"
+    ).style.backgroundImage = `url(${background})`;
+    saveBtn.hidden = false;
+  });
+
+  // Send the players color and clicked pixel-ID to server for broadcasting
+  function addColorOnPixel(color) {
+    // Get your assigned color
+    // let color = document.querySelector('.colorbox').id;
+
+    // Add addEventListener on each pixel
+    document.querySelectorAll(".pixel").forEach((pixel) => {
+      pixel.addEventListener("click", (e) => {
+        // If pixel doesn't have an inline background-color style
+        // Then set color (so you can't change another players pixel)
+        // console.log('clicking pixel');
+        // === "background-color:''"
+        if (!e.target.getAttribute("style")) {
+          // Set the pixel-color for the player
+          e.target.setAttribute("style", `background-color:${color}`);
+
+          // Save the pixel information in an object to send
+          let pixelData = {
+            id: e.target.id,
+            color,
+          };
+
+          // Send the data to server for broadcast to the other players
+          socket.emit("addColorOnTarget", pixelData);
+
+          let sendPixelInfo = { id: e.target.id, color: color };
+
+          socket.emit("toPicArray", sendPixelInfo);
+        }
+      });
+
+      // pixel.addEventListener('contextmenu', (e) => {
+      //     e.preventDefault();
+      //     if (
+      //         document.getElementById(e.target.id).style.backgroundColor ===
+      //         color
+      //     ) {
+      //         e.target.setAttribute('style', `background-color:''`);
+      //         // Save the pixel information in an object to send
+      //         let pixelData = {
+      //             id: e.target.id,
+      //             color: "''",
+      //         };
+
+      //         // Send the data to server for broadcast to the other players
+      //         socket.emit('addColorOnTarget', pixelData);
+
+      //         let sendPixelInfo = { id: e.target.id, color: color };
+
+      //         socket.emit('toPicArray', sendPixelInfo);
+      //     }
+      // });
+    });
+  }
+});
 
 // Add the color that other players clicked on
 socket.on("addPixel", ({ id, color }) => {
