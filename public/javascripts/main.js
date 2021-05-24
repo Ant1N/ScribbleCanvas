@@ -68,7 +68,8 @@ function createGrid() {
     let html = '<div class="gamefield" id="gamefield">';
 
     for (let i = 0; i < 225; i++) {
-        html += `<div class="pixel" id="${i}" style="background-color:''";></div>`;
+        // style="background-color:''";
+        html += `<div class="pixel" id="${i}"></div>`;
     }
     html += '</div>';
 
@@ -138,7 +139,8 @@ function addColorOnPixel(color) {
             // If pixel doesn't have an inline background-color style
             // Then set color (so you can't change another players pixel)
             // console.log('clicking pixel');
-            if (e.target.getAttribute('style') === "background-color:''") {
+            // === "background-color:''"
+            if (!e.target.getAttribute('style')) {
                 // Set the pixel-color for the player
                 e.target.setAttribute('style', `background-color:${color}`);
 
@@ -157,27 +159,27 @@ function addColorOnPixel(color) {
             }
         });
 
-        pixel.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            if (
-                document.getElementById(e.target.id).style.backgroundColor ===
-                color
-            ) {
-                e.target.setAttribute('style', `background-color:''`);
-                // Save the pixel information in an object to send
-                let pixelData = {
-                    id: e.target.id,
-                    color: "''",
-                };
+        // pixel.addEventListener('contextmenu', (e) => {
+        //     e.preventDefault();
+        //     if (
+        //         document.getElementById(e.target.id).style.backgroundColor ===
+        //         color
+        //     ) {
+        //         e.target.setAttribute('style', `background-color:''`);
+        //         // Save the pixel information in an object to send
+        //         let pixelData = {
+        //             id: e.target.id,
+        //             color: "''",
+        //         };
 
-                // Send the data to server for broadcast to the other players
-                socket.emit('addColorOnTarget', pixelData);
+        //         // Send the data to server for broadcast to the other players
+        //         socket.emit('addColorOnTarget', pixelData);
 
-                let sendPixelInfo = { id: e.target.id, color: color };
+        //         let sendPixelInfo = { id: e.target.id, color: color };
 
-                socket.emit('toPicArray', sendPixelInfo);
-            }
-        });
+        //         socket.emit('toPicArray', sendPixelInfo);
+        //     }
+        // });
     });
 }
 
