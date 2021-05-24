@@ -214,86 +214,6 @@ async function saveGame() {
 }
 
 function savePicToDB() {
-<<<<<<< HEAD
-  socket.emit("wantsPicArray", "click");
-
-  socket.on("sendArrayToServer", (array) => {
-    console.log("Denna ska skickas", array);
-
-    fetch("http://localhost:3000/savePic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ array }),
-    })
-    .then(resp => resp.json())
-    .then(answer => {
-      console.log(answer);
-    });
-  });
-};
-
-function getGame() {
-  const gameField = document.getElementById("gamefield");
-  fetch("http://localhost:3000/getGame")
-    .then((resp) => resp.json())
-    .then((data) => {
-      console.log(data.gameboard);
-      gameField.outerHTML = data.gameboard;
-      addColorOnPixel(localStorage.getItem('playerColor'));
-      // addColorOnPixel(localStorage.getItem('playerColor'));
-    });
-}
-
-const pics = [
-  { picId: 1, img: "../stylesheets/pictures/pizza.png" },
-  { picId: 2, img: "../stylesheets/pictures/Mario.png" },
-  { picId: 3, img: "../stylesheets/pictures/emoji.png" },
-  { picId: 4, img: "../stylesheets/pictures/hjarta.png" },
-  //{ picId: 1, img: 'images/' },
-];
-
-function getPic() {
-  fetch("http://localhost:3000/getPic")
-    .then((resp) => resp.json())
-    .then((data) => {
-      console.log("Id :", data.picId);
-      console.log("Facit :", data.picture);
-      //let backgroundGamePic = document.getElementById("game-container");
-      for (pic in pics) {
-        if (pics[pic].picId == data.picId) {
-          //backgroundGamePic.style.backgroundImage = `url(${pics[pic].img})`;
-          return `url(${pics[pic].img})`;
-        }
-      }
-    });
-}
-
-const pics = [
-  {picId: 1, img: "images/"},
-  {picId: 2, img: "images/"},
-  {picId: 3, img: "images/"},
-  {picId: 4, img: "images/"},
-  {picId: 1, img: "images/"},
-];
-
-function getPic() {
-  fetch('http://localhost:3000/getPic')
-  .then((resp) => resp.json())
-  .then((data) => {
-    console.log("Id :", data.picId);
-    console.log("Facit :", data.picture);
-
-    for (pic in pics) {
-      if (pics[pic].picId == data.picId) {
-        console.log("Printa bild");
-        return;
-      };
-    };
-  });
-};
-=======
     socket.emit('wantsPicArray', 'click');
 
     socket.on('sendArrayToServer', (array) => {
@@ -329,4 +249,3 @@ socket.on('loadGameboard', (gameboard) => {
     document.getElementById('gamefield').outerHTML = gameboard;
     addColorOnPixel(color);
 });
->>>>>>> 00bc63f802eed46a483a0cc0c2985647cf62ce9e
