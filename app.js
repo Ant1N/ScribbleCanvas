@@ -4,10 +4,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const socketio = require("socket.io");
 const mongoose = require("mongoose");
-
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-
+const Pic = require("./schemas/picSchema.js");
 var app = express();
 const server = require("http").Server(app);
 const io = socketio(server);
@@ -100,7 +99,19 @@ io.on("connection", (socket) => {
     socket.emit("playerColor", color);
 
     // get the amount of colors taken and send it to the connected clients
-    getAmountOfPlayers();
+    if (getAmountOfPlayers() === 2) {
+      console.log("lets play");
+      // socket.on('startGame', () => {
+      //  let background = getBackground();
+      // console.log('background', background);
+
+      startGame();
+      // io.emit('playersConnected', getAmountOfPlayers());
+
+      // });
+    } else {
+      io.emit("waitForPlayers", getAmountOfPlayers());
+    }
 
     // Send a players color and pixel to the other players
     socket.on("addColorOnTarget", ({ id, color }) => {
@@ -113,10 +124,6 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("startGame", (url) => {
-    io.emit("createGrid", url);
-    console.log("url", url);
-  });
   // LISTEN FOR CHAT MESSAGE
   socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
@@ -125,12 +132,17 @@ io.on("connection", (socket) => {
     io.emit("message", formatMessage(user.username, msg));
   });
 
+  socket.on("loadGame", (gameboard) => {
+    console.log("gameboard", gameboard);
+    socket.broadcast.emit("loadGameboard", gameboard);
+  });
+
   // WHEN A USER DISCONNECT
   socket.on("disconnect", () => {
     // REMOVE USER FROM ARRAY
     const user = userLeave(socket.id);
     disconnectUser(socket.id);
-    getAmountOfPlayers();
+    io.emit("waitForPlayers", getAmountOfPlayers());
 
     if (user) {
       io.emit(
@@ -167,7 +179,34 @@ function getAmountOfPlayers() {
   let playersConnected = colors.filter((color) => color.socketID !== "").length;
 
   // send amount of players connected to all connected clients
-  return io.emit("playersConnected", playersConnected);
+  // return io.emit('playersConnected', playersConnected);
+  return playersConnected;
+}
+
+async function startGame() {
+  const backgrounds = [
+    [{ picId: 1, url: "../stylesheets/pictures/pizza.png" }],
+    [{ picId: 2, url: "../stylesheets/pictures/Mario.png" }],
+    [{ picId: 3, url: "../stylesheets/pictures/emoji.png" }],
+    [{ picId: 4, url: "../stylesheets/pictures/hjarta.png" }],
+    [{ picId: 5, url: "../stylesheets/pictures/burger.png" }],
+  ];
+
+  // HÄR VILL VI HÄMTA EN BILD RANDOM
+  let randomBetween1and5 = Math.floor(Math.random() * 4);
+
+  // console.log('random', randomBetween1and5);
+  const randomBackground = backgrounds[randomBetween1and5][0];
+  // console.log('picid', piccc.picId);
+
+  io.emit("startGame", randomBackground.url);
+
+  //TODO: fetch answer and correct
+  // Find correct answer from database
+  // const data = await Pic.findOne({
+  //     picId: backgrounds.picId,
+  // });
+  // console.log('data from db', data);
 }
 
 module.exports = { app: app, server: server };
