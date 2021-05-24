@@ -36,10 +36,17 @@ document.addEventListener("click", (evt) => {
 });
 
 function startTimer() {
-  var incomeTicker = 60;
-  setInterval(function () {
-    if (incomeTicker > 0) incomeTicker--;
-    document.getElementById("timer").innerHTML = incomeTicker;
+  var incomeTicker = 10;
+
+  timer = setInterval(function () {
+    if (incomeTicker > 0) {
+      incomeTicker--;
+      document.getElementById("timer").innerHTML = incomeTicker;
+    } else {
+      console.log("Tiden är ute");
+      stopTimer();
+      correctGame();
+    }
   }, 1000);
 }
 
