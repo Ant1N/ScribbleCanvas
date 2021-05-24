@@ -13,27 +13,28 @@ let color = ''; // will be updated with assigned color
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
 document.addEventListener('click', (evt) => {
-  switch (evt.target.id) {
-    case 'joinChat':
-      socket.emit('joinGame', username.value);
-      removeModal();
-      displayUser();
-      break;
-    case 'saveBtn':
-      saveGame();
-      break;
-    case 'getGameBtn':
-      // getGame();
-      getGame();
-      break;
-    case 'savePicToDB':
-      savePicToDB();
-      break;
-    case 'startBtn':
-      socket.emit('letsPlay');
-      let timedCheck = setTimeout(timer, 60000);
-      break;
-  }
+    switch (evt.target.id) {
+        case 'joinChat':
+            socket.emit('joinGame', username.value);
+            removeModal();
+            displayUser();
+            break;
+        case 'saveBtn':
+            // saveGame();
+            correctGame();
+            break;
+        case 'getGameBtn':
+            // getGame();
+            getGame();
+            break;
+        case 'savePicToDB':
+            savePicToDB();
+            break;
+        case 'startBtn':
+            socket.emit('letsPlay');
+            let timedCheck = setTimeout(timer, 60000);
+            break;
+    }
 });
 
 //timer functionality
@@ -111,9 +112,8 @@ socket.on('waitForPlayers', (playerConnected) => {
 
 // Generate the grid for all players, see emit (after startGame)
 socket.on('startGameClick', () => {
-  startBtn.hidden = false;
-
-  //localStorage.setItem("playerColor", data.color);
+    startBtn.hidden = false;
+    //localStorage.setItem("playerColor", data.color);
 });
 
 socket.on('startGame', (background) => {
@@ -241,23 +241,71 @@ async function saveGame() {
 }
 
 function savePicToDB() {
-  socket.emit('wantsPicArray', 'click');
+    socket.emit('wantsPicArray', 'click');
+
+    
+    
+    socket.on('sendArrayToServer', (array) => {
+        console.log('Denna ska skickas', array);
+
+        // fetch('http://localhost:3000/savePic', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ array }),
+        // })
+        //     .then((resp) => resp.json())
+        //     .then((answer) => {
+        //         console.log(answer);
+        //     });
+    });
+}
+
+let currentPicId;
+
+socket.on('correctGame', picId => {
+  currentPicId = picId;
+});
+
+function correctGame() {
+  socket.emit('wantsPicArray');
+
+  console.log(currentPicId);
+  let sendPicId = currentPicId;
+  let correctAnswers = 0;
 
   socket.on('sendArrayToServer', (array) => {
-    console.log('Denna ska skickas', array);
+    console.log('Det här är våra klick', array);
 
-    fetch('http://localhost:3000/savePic', {
-      method: 'POST',
-      headers: {
+    fetch('http://localhost:3000/getSolution', {
+    method: 'POST',
+    headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ array }),
+    },
+    body: JSON.stringify({ sendPicId }),
     })
-      .then((resp) => resp.json())
-      .then((answer) => {
-        console.log(answer);
-      });
+    .then((resp) => resp.json())
+    .then((answer) => {
+        console.log("Solution: ", answer);
+
+        
+        for (click in array) {
+          for (i in answer) {
+            if (array[click].id == answer[i].id && array[click].color == answer[i].color) {
+              correctAnswers++;
+            }
+          }
+        }
+
+        let correctAnswerPercent = correctAnswers/225 * 100;
+        let corAnsPer = correctAnswerPercent.toFixed(2);
+        console.log(correctAnswers);
+        console.log(corAnsPer);
+    });
+
   });
+  
 }
 
 function getGame() {
