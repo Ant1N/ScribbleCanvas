@@ -216,19 +216,19 @@ function savePicToDB() {
   socket.emit("wantsPicArray", "click");
 
   socket.on("sendArrayToServer", (array) => {
-    console.log("Denna ska skickas", array);
+    console.log("Klick: ", array);
 
-    fetch("http://localhost:3000/savePic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ array }),
-    })
-      .then((resp) => resp.json())
-      .then((answer) => {
-        console.log(answer);
-      });
+    // fetch("http://localhost:3000/savePic", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ array }),
+    // })
+    //   .then((resp) => resp.json())
+    //   .then((answer) => {
+    //     console.log(answer);
+    //   });
   });
 }
 
@@ -244,14 +244,7 @@ function getGame() {
     });
 }
 
-<<<<<<< HEAD
-socket.on('loadGameboard', (gameboard) => {
-    document.getElementById('gamefield').outerHTML = gameboard;
-    addColorOnPixel(color);
-});
-=======
 socket.on("loadGameboard", (gameboard) => {
   document.getElementById("gamefield").outerHTML = gameboard;
   addColorOnPixel(color);
 });
->>>>>>> 352658fa2687839266b89d4c356711b7dfbfc62b
