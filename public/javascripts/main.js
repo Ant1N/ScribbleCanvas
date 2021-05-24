@@ -20,11 +20,9 @@ document.addEventListener('click', (evt) => {
             displayUser();
             break;
         case 'saveBtn':
-            // saveGame();
-            correctGame();
+            saveGame();
             break;
         case 'getGameBtn':
-            // getGame();
             getGame();
             break;
         case 'savePicToDB':
@@ -32,6 +30,7 @@ document.addEventListener('click', (evt) => {
             break;
         case 'startBtn':
             socket.emit('letsPlay');
+            startTimer();
             break;
     }
 });
@@ -49,6 +48,10 @@ function startTimer() {
         document.getElementById('timer').innerHTML = incomeTicker;
     }, 1000);
 }
+
+function stopTimer() {
+  clearInterval(timer);
+};
 
 //Modal function
 function removeModal() {
@@ -77,7 +80,7 @@ function createGrid() {
     gameContainer.innerHTML = html;
 }
 
-// GET ROOM AND USERS AND PRINT IN CHAT
+// GET USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
     outputUsers(users);
 });

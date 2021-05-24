@@ -70,7 +70,7 @@ const botName = 'Chattroboten';
 const picArray = [];
 
 io.on('connection', (socket) => {
-    // GET USER AND ROOM FROM USERS.JS
+    // GET USER FROM USERS.JS
     socket.on('joinGame', (username) => {
         // console.log('username', username);
 
@@ -78,14 +78,12 @@ io.on('connection', (socket) => {
         const user = userJoin(socket.id, username);
 
         // WELCOME CURRENT USER
-        // EMIT = SEND TO CURRENT USER
         socket.emit(
             'message',
             formatMessage(botName, 'Välkommen till chatten!')
         );
 
         // WHEN A USER CONNECT
-        // BROADCAST = SEND TO ALL USERS
         socket.broadcast.emit(
             'message',
             formatMessage(
@@ -105,7 +103,7 @@ io.on('connection', (socket) => {
         socket.emit('playerColor', color);
 
         // get the amount of colors taken and send it to the connected clients
-        if (getAmountOfPlayers() === 2) {
+        if (getAmountOfPlayers() === 4) {
             console.log('lets play');
             // socket.on('startGame', () => {
             //  let background = getBackground();
@@ -124,7 +122,7 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('addPixel', { id, color });
         });
 
-        // SEND ROOM AND USERS TO FRONTEND
+        // SEND USERS TO FRONTEND
         io.emit('roomUsers', {
             users: getRoomUsers(),
         });
@@ -163,14 +161,17 @@ io.on('connection', (socket) => {
         }
     });
 
+    // GET CLICKED DIV ID AND COLOR AND PUSH TO ARRAY
     socket.on('toPicArray', (pushToPicArray) => {
         picArray.push(pushToPicArray);
     });
 
+    // SEND ARRAY TO FRONT
     socket.on('wantsPicArray', (msg) => {
         socket.emit('sendArrayToServer', picArray);
     });
 
+    // WHEN CLICK ON START BTN
     socket.on('letsPlay', () => {
         startGame();
     });
@@ -204,23 +205,14 @@ async function startGame() {
         [{ picId: 5, url: '../stylesheets/pictures/burger.png' }],
     ];
 
-    // HÄR VILL VI HÄMTA EN BILD RANDOM
+    // GET RANDOM NUMBER
     let randomBetween1and5 = Math.floor(Math.random() * 4);
 
-    // console.log('random', randomBetween1and5);
     const randomBackground = backgrounds[randomBetween1and5][0];
-    // console.log('picid', piccc.picId);
 
     io.emit('startGame', randomBackground.url);
 
     io.emit('correctGame', randomBackground.picId);
-
-    //TODO: fetch answer and correct
-    // Find correct answer from database
-    // const data = await Pic.findOne({
-    //     picId: backgrounds.picId,
-    // });
-    // console.log('data from db', data);
 }
 
 module.exports = { app: app, server: server };

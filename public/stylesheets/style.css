@@ -81,7 +81,10 @@ a {
     background-color: #000;
     opacity: 0.5;
 }
-
+#timer {
+  font-size: 30px;
+  margin: auto 20px;
+}
 button {
     font-family: 'Lato', sans-serif;
     text-transform: uppercase;
