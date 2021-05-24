@@ -5,6 +5,7 @@ const chatMessages = document.querySelector(".chat-messages");
 const userList = document.getElementById("users");
 const gameContainer = document.getElementById("game-container");
 const saveBtn = document.getElementById("saveBtn");
+const startBtn = document.getElementById("startBtn");
 const loadBtn = document.getElementById("getGameBtn");
 const username = document.getElementById("username");
 
@@ -28,8 +29,25 @@ document.addEventListener("click", (evt) => {
     case "savePicToDB":
       savePicToDB();
       break;
+    case "startBtn":
+      socket.emit("startGame");
+      let timedCheck = setTimeout(timer, 60000);
+      break;
   }
 });
+
+function timer() {
+  let correctness = 0;
+  let facit = 0; /*Insert facit thing here*/
+  let gameState = document.getElementsByClassName(pixel);
+  for(let i in gamestate){
+    if(gameState[i].style.backgroundColor == facit[i].style.backgroundColor){
+    correctness++; 
+    }
+  }
+  console.log("Correctness score is " + (correctness/225)*100 + "%");
+  clearTimeout(timer);
+} 
 
 //Modal function
 function removeModal() {
@@ -86,6 +104,7 @@ socket.on("waitForPlayers", (playerConnected) => {
   usernameDisplay.style.backgroundColor = "";
   saveBtn.hidden = true;
   loadBtn.hidden = true;
+  startBtn.hidden = true;
 });
 
 // Generate the grid for all players, see emit (after startGame)
@@ -98,6 +117,7 @@ socket.on("startGame", (background) => {
   ).style.backgroundImage = `url(${background})`;
   saveBtn.hidden = false;
   loadBtn.hidden = false;
+  startBtn.hidden = false;
   //localStorage.setItem("playerColor", data.color);
 });
 
