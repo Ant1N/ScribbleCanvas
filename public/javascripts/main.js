@@ -1,14 +1,5 @@
 const socket = io();
 
-<<<<<<< HEAD
-const chatForm = document.getElementById("chat-form");
-const chatMessages = document.querySelector(".chat-messages");
-const userList = document.getElementById("users");
-const gameContainer = document.getElementById("game-container");
-const saveBtn = document.getElementById("saveBtn");
-const loadBtn = document.getElementById("getGameBtn");
-const username = document.getElementById("username");
-=======
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const userList = document.getElementById('users');
@@ -17,33 +8,10 @@ const saveBtn = document.getElementById('saveBtn');
 const startBtn = document.getElementById('startBtn');
 const loadBtn = document.getElementById('getGameBtn');
 const username = document.getElementById('username');
->>>>>>> 13b9bb5a9d3eea89750d310f0570778454b216c1
 
 let color = ''; // will be updated with assigned color
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
-<<<<<<< HEAD
-document.addEventListener("click", (evt) => {
-  switch (evt.target.id) {
-    case "joinChat":
-      socket.emit("joinGame", username.value);
-      removeModal();
-      displayUser();
-      break;
-    case "saveBtn":
-      saveGame();
-      break;
-    case "getGameBtn":
-      // getGame();
-      getGame();
-      break;
-    case "savePicToDB":
-      savePicToDB();
-      break;
-  }
-});
-
-=======
 document.addEventListener('click', (evt) => {
     switch (evt.target.id) {
         case 'joinChat':
@@ -83,7 +51,6 @@ function timer() {
     clearTimeout(timer);
 }
 
->>>>>>> 13b9bb5a9d3eea89750d310f0570778454b216c1
 //Modal function
 function removeModal() {
     document.getElementById('overlay').style.display = 'none';
@@ -130,30 +97,6 @@ socket.on('playerColor', (data) => {
 });
 
 // wher a player join the game
-<<<<<<< HEAD
-socket.on("waitForPlayers", (playerConnected) => {
-  // if 4 players have joined the game, the start it for all players
-  // else update how many players are connected x/4
-
-  // document.getElementById('gamefield').style.backgroundImage = '';
-  gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
-  usernameDisplay.style.backgroundColor = "";
-  saveBtn.hidden = true;
-  loadBtn.hidden = true;
-});
-
-// Generate the grid for all players, see emit (after startGame)
-socket.on("startGame", (background) => {
-  createGrid();
-  addColorOnPixel(color);
-  usernameDisplay.style.backgroundColor = color;
-  document.getElementById(
-    "gamefield"
-  ).style.backgroundImage = `url(${background})`;
-  saveBtn.hidden = false;
-  loadBtn.hidden = false;
-  //localStorage.setItem("playerColor", data.color);
-=======
 socket.on('waitForPlayers', (playerConnected) => {
     // if 4 players have joined the game, the start it for all players
     // else update how many players are connected x/4
@@ -169,7 +112,6 @@ socket.on('waitForPlayers', (playerConnected) => {
 // Generate the grid for all players, see emit (after startGame)
 socket.on('startGameClick', () => {
     startBtn.hidden = false;
-
     //localStorage.setItem("playerColor", data.color);
 });
 
@@ -186,7 +128,6 @@ socket.on('startGame', (background) => {
     ).style.backgroundImage = `url(${background})`;
     saveBtn.hidden = false;
     loadBtn.hidden = false;
->>>>>>> 13b9bb5a9d3eea89750d310f0570778454b216c1
 });
 
 // Send the players color and clicked pixel-ID to server for broadcasting
