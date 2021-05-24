@@ -35,12 +35,6 @@ document.addEventListener('click', (evt) => {
     }
 });
 
-//timer functionality
-
-document.getElementById('timerBtn').addEventListener('click', function () {
-    startTimer();
-});
-
 function startTimer() {
     var incomeTicker = 60;
     setInterval(function () {
@@ -50,8 +44,8 @@ function startTimer() {
 }
 
 function stopTimer() {
-  clearInterval(timer);
-};
+    clearInterval(timer);
+}
 
 //Modal function
 function removeModal() {
