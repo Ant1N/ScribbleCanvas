@@ -8,6 +8,7 @@ const saveBtn = document.getElementById("saveBtn");
 const startBtn = document.getElementById("startBtn");
 const loadBtn = document.getElementById("getGameBtn");
 const username = document.getElementById("username");
+const resultContainer = document.getElementById("resultContainer");
 
 let color = ""; // will be updated with assigned color
 
@@ -310,6 +311,7 @@ function correctGame() {
         let corAnsPer = correctAnswerPercent.toFixed(2);
         console.log(correctAnswers);
         console.log(corAnsPer + "%");
+        resultContainer.innerHTML = `<div class="result-container"><p> Ert resultat:</p> <p class="correct-percent">${corAnsPer}% korrekt.</p></div>`;
         socket.off("sendArrayToServer");
       });
   });
