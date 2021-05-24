@@ -282,7 +282,7 @@ function correctGame() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ sendPicId }),
+            body: JSON.stringify({ sendPicId })
         })
             .then((resp) => resp.json())
             .then((answer) => {
@@ -303,6 +303,7 @@ function correctGame() {
                 let corAnsPer = correctAnswerPercent.toFixed(2);
                 console.log(correctAnswers);
                 console.log(corAnsPer + '%');
+                socket.off('sendArrayToServer');
             });
     });
 }
