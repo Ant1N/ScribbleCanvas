@@ -20,7 +20,8 @@ document.addEventListener('click', (evt) => {
             displayUser();
             break;
         case 'saveBtn':
-            saveGame();
+            // saveGame();
+            correctGame();
             break;
         case 'getGameBtn':
             // getGame();
@@ -241,21 +242,49 @@ async function saveGame() {
 function savePicToDB() {
     socket.emit('wantsPicArray', 'click');
 
+    
+    
     socket.on('sendArrayToServer', (array) => {
         console.log('Denna ska skickas', array);
 
-        fetch('http://localhost:3000/savePic', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ array }),
-        })
-            .then((resp) => resp.json())
-            .then((answer) => {
-                console.log(answer);
-            });
+        // fetch('http://localhost:3000/savePic', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ array }),
+        // })
+        //     .then((resp) => resp.json())
+        //     .then((answer) => {
+        //         console.log(answer);
+        //     });
     });
+}
+
+
+
+function correctGame() {
+  socket.emit('wantsPicArray');
+
+  socket.on('correctGame', picId => {
+    console.log(picId);
+  });
+
+  socket.on('sendArrayToServer', (array) => {
+      console.log('Det här är våra klick', array);
+
+      // fetch('http://localhost:3000/getFacit', {
+      //     method: 'POST',
+      //     headers: {
+      //         'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({ array }),
+      // })
+      //     .then((resp) => resp.json())
+      //     .then((answer) => {
+      //         console.log(answer);
+      //     });
+  });
 }
 
 function getGame() {

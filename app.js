@@ -212,6 +212,8 @@ async function startGame() {
 
     io.emit('startGame', randomBackground.url);
 
+    io.emit('correctGame', randomBackground.picId);
+
     //TODO: fetch answer and correct
     // Find correct answer from database
     // const data = await Pic.findOne({
