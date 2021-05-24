@@ -290,6 +290,7 @@ function correctGame() {
     .then((answer) => {
         console.log("Solution: ", answer);
 
+        console.log(correctAnswers);
         
         for (click in array) {
           for (i in answer) {
