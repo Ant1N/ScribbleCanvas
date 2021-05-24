@@ -30,7 +30,7 @@ document.addEventListener('click', (evt) => {
             break;
         case 'startBtn':
             socket.emit('letsPlay');
-            startTimer();
+            socket.emit("timerStart");
             break;
     }
 });
@@ -85,6 +85,10 @@ function createGrid() {
 // GET USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
     outputUsers(users);
+});
+
+socket.on("timerStartClient",(msg) => {
+    startTimer();
 });
 
 // GET MESSAGE FROM SERVER AND PRINT IT
@@ -294,6 +298,7 @@ function correctGame() {
                             array[j].id == answer[i].id &&
                             array[j].color == answer[i].color
                         ) {
+                            console.log("correct with "+  array[j].id, answer[i].id, array[j].color, answer[i].color);
                             correctAnswers++;
                         }
                     }

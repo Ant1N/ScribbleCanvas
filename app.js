@@ -167,12 +167,13 @@ io.on('connection', (socket) => {
     // SEND ARRAY TO FRONT
     socket.on('wantsPicArray', (msg) => {
         socket.emit('sendArrayToServer', picArray);
-        picArray = [];
+        
     });
 
     // WHEN CLICK ON START BTN
     socket.on('letsPlay', () => {
         startGame();
+        io.emit('timerStartClient');
     });
 });
 
@@ -196,6 +197,7 @@ function getAmountOfPlayers() {
 }
 
 async function startGame() {
+    picArray = [];
     const backgrounds = [
         [{ picId: 1, url: '../stylesheets/pictures/pizza.png' }],
         [{ picId: 2, url: '../stylesheets/pictures/Mario.png' }],
