@@ -45,7 +45,6 @@ function startTimer() {
       incomeTicker--;
       document.getElementById('timer').innerHTML = incomeTicker;
     } else {
-      console.log("Tiden är ute");
       stopTimer();
       correctGame();
     }
@@ -242,14 +241,12 @@ async function saveGame() {
         body: JSON.stringify({ htmlGameState }),
     });
     const result = await response.json();
-    console.log(result);
 }
 
 function savePicToDB() {
     socket.emit('wantsPicArray', 'click');
 
     socket.on('sendArrayToServer', (array) => {
-        console.log('Denna ska skickas', array);
 
         // fetch('http://localhost:3000/savePic', {
         //     method: 'POST',
@@ -274,7 +271,6 @@ socket.on('correctGame', (picId) => {
 function correctGame() {
     socket.emit('wantsPicArray');
 
-    console.log(currentPicId);
     let sendPicId = currentPicId;
     let correctAnswers = 0;
 
@@ -305,7 +301,7 @@ function correctGame() {
 
                 let correctAnswerPercent = (correctAnswers / 225) * 100;
                 let corAnsPer = correctAnswerPercent.toFixed(2);
-
+                console.log(correctAnswers);
                 console.log(corAnsPer + '%');
             });
     });

@@ -67,7 +67,7 @@ const {
 } = require('./utils/users.js');
 
 const botName = 'Chattroboten';
-const picArray = [];
+var picArray = [];
 
 io.on('connection', (socket) => {
     // GET USER FROM USERS.JS
@@ -104,7 +104,6 @@ io.on('connection', (socket) => {
 
         // get the amount of colors taken and send it to the connected clients
         if (getAmountOfPlayers() === 4) {
-            console.log('lets play');
             // socket.on('startGame', () => {
             //  let background = getBackground();
             // console.log('background', background);
@@ -137,7 +136,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('loadGame', (gameboard) => {
-        console.log('gameboard', gameboard);
         socket.broadcast.emit('loadGameboard', gameboard);
     });
 
@@ -169,6 +167,7 @@ io.on('connection', (socket) => {
     // SEND ARRAY TO FRONT
     socket.on('wantsPicArray', (msg) => {
         socket.emit('sendArrayToServer', picArray);
+        picArray = [];
     });
 
     // WHEN CLICK ON START BTN
