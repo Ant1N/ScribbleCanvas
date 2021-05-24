@@ -98,6 +98,7 @@ socket.on("createGrid", (data) => {
   usernameDisplay.style.color = color;
   let backgroundGamePic = document.getElementById("game-container");
   backgroundGamePic.style.backgroundImage = data;
+  console.log(data);
   //localStorage.setItem("playerColor", data.color);
 });
 
@@ -239,7 +240,8 @@ function getPic() {
       console.log("Facit :", data.picture);
       //let backgroundGamePic = document.getElementById("game-container");
       for (pic in pics) {
-        if (pics[pic].picId == data.picId) {
+        if (pics[pic].picId === data.picId) {
+          console.log(pics[pic].img);
           //backgroundGamePic.style.backgroundImage = `url(${pics[pic].img})`;
           return `url(${pics[pic].img})`;
         }

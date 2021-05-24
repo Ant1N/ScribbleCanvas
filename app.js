@@ -115,6 +115,7 @@ io.on("connection", (socket) => {
 
   socket.on("startGame", (url) => {
     io.emit("createGrid", url);
+    console.log("url", url);
   });
   // LISTEN FOR CHAT MESSAGE
   socket.on("chatMessage", (msg) => {
