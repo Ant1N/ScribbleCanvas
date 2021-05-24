@@ -288,19 +288,18 @@ function correctGame() {
     .then((answer) => {
         console.log("Solution: ", answer);
 
-        
-        for (click in array) {
-          for (i in answer) {
-            if (array[click].id == answer[i].id && array[click].color == answer[i].color) {
+        for (let i = 0; i < answer.length; i++) {
+          for (let j = 0; j < array.length; j++) {
+            if (array[j].id == answer[i].id && array[j].color == answer[i].color) {
               correctAnswers++;
             }
           }
         }
 
-        let correctAnswerPercent = correctAnswers/225 * 100;
+        let correctAnswerPercent = correctAnswers / 225 * 100;
         let corAnsPer = correctAnswerPercent.toFixed(2);
-        console.log(correctAnswers);
-        console.log(corAnsPer);
+
+        console.log(corAnsPer + "%");
     });
 
   });
