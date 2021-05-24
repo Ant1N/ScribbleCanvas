@@ -20,11 +20,9 @@ document.addEventListener('click', (evt) => {
             displayUser();
             break;
         case 'saveBtn':
-            // saveGame();
-            correctGame();
+            saveGame();
             break;
         case 'getGameBtn':
-            // getGame();
             getGame();
             break;
         case 'savePicToDB':
@@ -32,23 +30,31 @@ document.addEventListener('click', (evt) => {
             break;
         case 'startBtn':
             socket.emit('letsPlay');
+            startTimer();
             break;
     }
 });
 
-//timer functionality
-
-document.getElementById('timerBtn').addEventListener('click', function () {
-  startTimer();
-});
-
+// Timer
+let timer;
 function startTimer() {
-  var incomeTicker = 60;
-  setInterval(function () {
-    if (incomeTicker > 0) incomeTicker--;
-    document.getElementById('timer').innerHTML = incomeTicker;
+  var incomeTicker = 10;
+
+  timer = setInterval(function () {
+    if (incomeTicker > 0) {
+      incomeTicker--;
+      document.getElementById('timer').innerHTML = incomeTicker;
+    } else {
+      console.log("Tiden är ute");
+      stopTimer();
+      correctGame();
+    }
   }, 1000);
 }
+
+function stopTimer() {
+  clearInterval(timer);
+};
 
 //Modal function
 function removeModal() {
@@ -77,7 +83,7 @@ function createGrid() {
   gameContainer.innerHTML = html;
 }
 
-// GET ROOM AND USERS AND PRINT IN CHAT
+// GET USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
   outputUsers(users);
 });
@@ -298,7 +304,8 @@ function correctGame() {
 
         let correctAnswerPercent = correctAnswers / 225 * 100;
         let corAnsPer = correctAnswerPercent.toFixed(2);
-
+        
+        console.log(correctAnswers);
         console.log(corAnsPer + "%");
     });
 
