@@ -48,10 +48,7 @@ router.get('/getPic', async function (req, res, next) {
 
 router.post('/getSolution', async function (req, res, next) {
   let picId = req.body;
-  console.log("PicId:", picId.sendPicId);
-
   const data = await Pic.findOne({picId: picId.sendPicId});
-  console.log(data);
   res.json(data.picture);
 });
 

@@ -30,7 +30,7 @@ document.addEventListener("click", (evt) => {
       break;
     case "startBtn":
       socket.emit("letsPlay");
-      startTimer();
+      socket.emit("timerStart");
       break;
   }
 });
@@ -43,7 +43,6 @@ function startTimer() {
       incomeTicker--;
       document.getElementById("timer").innerHTML = incomeTicker;
     } else {
-      console.log("Tiden är ute");
       stopTimer();
       correctGame();
     }
@@ -84,6 +83,10 @@ function createGrid() {
 // GET USERS AND PRINT IN CHAT
 socket.on("roomUsers", ({ users }) => {
   outputUsers(users);
+});
+
+socket.on("timerStartClient", (msg) => {
+  startTimer();
 });
 
 // GET MESSAGE FROM SERVER AND PRINT IT
@@ -240,15 +243,12 @@ async function saveGame() {
     body: JSON.stringify({ htmlGameState }),
   });
   const result = await response.json();
-  console.log(result);
 }
 
 function savePicToDB() {
   socket.emit("wantsPicArray", "click");
 
   socket.on("sendArrayToServer", (array) => {
-    console.log("Denna ska skickas", array);
-
     // fetch('http://localhost:3000/savePic', {
     //     method: 'POST',
     //     headers: {
@@ -272,7 +272,6 @@ socket.on("correctGame", (picId) => {
 function correctGame() {
   socket.emit("wantsPicArray");
 
-  console.log(currentPicId);
   let sendPicId = currentPicId;
   let correctAnswers = 0;
 
@@ -296,6 +295,12 @@ function correctGame() {
               array[j].id == answer[i].id &&
               array[j].color == answer[i].color
             ) {
+              console.log(
+                "correct with " + array[j].id,
+                answer[i].id,
+                array[j].color,
+                answer[i].color
+              );
               correctAnswers++;
             }
           }
@@ -303,8 +308,9 @@ function correctGame() {
 
         let correctAnswerPercent = (correctAnswers / 225) * 100;
         let corAnsPer = correctAnswerPercent.toFixed(2);
-
+        console.log(correctAnswers);
         console.log(corAnsPer + "%");
+        socket.off("sendArrayToServer");
       });
   });
 }
