@@ -32,7 +32,6 @@ document.addEventListener('click', (evt) => {
             break;
         case 'startBtn':
             socket.emit('letsPlay');
-            let timedCheck = setTimeout(timer, 60000);
             break;
     }
 });
