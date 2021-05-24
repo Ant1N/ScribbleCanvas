@@ -20,11 +20,9 @@ document.addEventListener('click', (evt) => {
             displayUser();
             break;
         case 'saveBtn':
-            // saveGame();
-            correctGame();
+            saveGame();
             break;
         case 'getGameBtn':
-            // getGame();
             getGame();
             break;
         case 'savePicToDB':
@@ -37,8 +35,8 @@ document.addEventListener('click', (evt) => {
     }
 });
 
+// Timer
 let timer;
-
 function startTimer() {
   var incomeTicker = 10;
 
@@ -85,7 +83,7 @@ function createGrid() {
   gameContainer.innerHTML = html;
 }
 
-// GET ROOM AND USERS AND PRINT IN CHAT
+// GET USERS AND PRINT IN CHAT
 socket.on('roomUsers', ({ users }) => {
   outputUsers(users);
 });

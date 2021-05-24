@@ -40,7 +40,6 @@ router.post('/savePic', async function (req, res, next) {
 });
 
 router.get('/getPic', async function (req, res, next) {
-  // HÄR VILL VI HÄMTA EN BILD RANDOM
   let randomBetween1and5 = Math.floor(Math.random() * 4) + 1;
 
   const data = await Pic.findOne({picId: randomBetween1and5});
