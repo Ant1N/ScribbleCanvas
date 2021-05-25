@@ -67,7 +67,7 @@ const {
 } = require('./utils/users.js');
 
 const botName = 'Chattroboten';
-const picArray = [];
+var picArray = [];
 
 io.on('connection', (socket) => {
     // GET USER FROM USERS.JS
@@ -104,12 +104,12 @@ io.on('connection', (socket) => {
 
         // get the amount of colors taken and send it to the connected clients
         if (getAmountOfPlayers() === 4) {
-            console.log('lets play');
             // socket.on('startGame', () => {
             //  let background = getBackground();
             // console.log('background', background);
 
             // io.emit('playersConnected', getAmountOfPlayers());
+            io.emit('waitForPlayers', getAmountOfPlayers());
             io.emit('startGameClick');
             // });
         } else {
@@ -136,7 +136,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('loadGame', (gameboard) => {
-        console.log('gameboard', gameboard);
         socket.broadcast.emit('loadGameboard', gameboard);
     });
 
@@ -168,11 +167,13 @@ io.on('connection', (socket) => {
     // SEND ARRAY TO FRONT
     socket.on('wantsPicArray', (msg) => {
         socket.emit('sendArrayToServer', picArray);
+        
     });
 
     // WHEN CLICK ON START BTN
     socket.on('letsPlay', () => {
         startGame();
+        io.emit('timerStartClient');
     });
 });
 
@@ -196,6 +197,7 @@ function getAmountOfPlayers() {
 }
 
 async function startGame() {
+    picArray = [];
     const backgrounds = [
         [{ picId: 1, url: '../stylesheets/pictures/pizza.png' }],
         [{ picId: 2, url: '../stylesheets/pictures/Mario.png' }],
