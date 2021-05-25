@@ -72,7 +72,6 @@ var picArray = [];
 io.on('connection', (socket) => {
     // GET USER FROM USERS.JS
     socket.on('joinGame', (username) => {
-        // console.log('username', username);
 
         // PUSH USER TO USER-ARRAY
         const user = userJoin(socket.id, username);
@@ -104,14 +103,8 @@ io.on('connection', (socket) => {
 
         // get the amount of colors taken and send it to the connected clients
         if (getAmountOfPlayers() === 4) {
-            // socket.on('startGame', () => {
-            //  let background = getBackground();
-            // console.log('background', background);
-
-            // io.emit('playersConnected', getAmountOfPlayers());
             io.emit('waitForPlayers', getAmountOfPlayers());
             io.emit('startGameClick');
-            // });
         } else {
             io.emit('waitForPlayers', getAmountOfPlayers());
         }
@@ -175,6 +168,10 @@ io.on('connection', (socket) => {
         startGame();
         io.emit('timerStartClient');
     });
+
+    socket.on('paintMode', () => {
+        io.emit('printPaintMode');
+    });
 });
 
 // Finds the players color on their socket id and removes the ID
@@ -192,7 +189,6 @@ function getAmountOfPlayers() {
     ).length;
 
     // send amount of players connected to all connected clients
-    // return io.emit('playersConnected', playersConnected);
     return playersConnected;
 }
 
@@ -207,9 +203,9 @@ async function startGame() {
     ];
 
     // GET RANDOM NUMBER
-    let randomBetween1and5 = Math.floor(Math.random() * 4);
+    let randomBetween1and5 = Math.floor(Math.random() * 5);
 
-    const randomBackground = backgrounds[randomBetween1and5][0];
+    const randomBackground = backgrounds[1][0];
 
     io.emit('startGame', randomBackground.url);
 

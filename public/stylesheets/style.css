@@ -246,6 +246,16 @@ nav h3 {
     outline-color: rgb(165, 159, 156);
 }
 
+#resultContainer {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.correct-percent {
+  font-weight: bold;
+}
+
 /* ------------- Create grid ------------- */
 
 .gamefield {

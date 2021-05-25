@@ -8,35 +8,48 @@ const saveBtn = document.getElementById("saveBtn");
 const startBtn = document.getElementById("startBtn");
 const loadBtn = document.getElementById("getGameBtn");
 const username = document.getElementById("username");
+const resultContainer = document.getElementById("resultContainer");
 
 let color = ""; // will be updated with assigned color
 
 // JOIN GAME, SEND USERNAME, PRINT GRID
-document.addEventListener("click", (evt) => {
-  switch (evt.target.id) {
-    case "joinChat":
-      socket.emit("joinGame", username.value);
-      removeModal();
-      displayUser();
-      break;
-    case "saveBtn":
-      saveGame();
-      break;
-    case "getGameBtn":
-      getGame();
-      break;
-    case "savePicToDB":
-      savePicToDB();
-      break;
-    case "startBtn":
-      socket.emit("letsPlay");
-      socket.emit("timerStart");
-      break;
-  }
+document.addEventListener('click', (evt) => {
+    switch (evt.target.id) {
+        case 'joinChat':
+            socket.emit('joinGame', username.value);
+            removeModal();
+            displayUser();
+            break;
+        case 'saveBtn':
+            saveGame();
+            break;
+        case 'getGameBtn':
+            getGame();
+            break;
+        case 'startBtn':
+            socket.emit('letsPlay');
+            socket.emit("timerStart");
+            break;
+        case 'paintBtn':
+          socket.emit('paintMode');
+        break;
+    };
 });
 
+socket.on('printPaintMode', () => {
+  paintMode();
+});
+
+function paintMode() {
+  createGrid();
+  addColorOnPixel(color);
+  usernameDisplay.style.backgroundColor = color;
+  saveBtn.hidden = false;
+  loadBtn.hidden = false;
+};
+
 function startTimer() {
-  var incomeTicker = 10;
+  let incomeTicker = 20;
 
   timer = setInterval(function () {
     if (incomeTicker > 0) {
@@ -45,13 +58,15 @@ function startTimer() {
     } else {
       stopTimer();
       correctGame();
-    }
+    };
   }, 1000);
-}
+  
+};
 
 function stopTimer() {
   clearInterval(timer);
-}
+  document.getElementById("timer").innerHTML = "";
+};
 
 //Modal function
 function removeModal() {
@@ -61,23 +76,21 @@ function removeModal() {
 
 //Display username function
 function displayUser() {
-  const usernameDisplay = document.getElementById("usernameDisplay");
-  usernameDisplay.innerHTML = username.value;
-}
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    usernameDisplay.innerHTML = username.value;
+};
 
 // Genereate the gamefield container and pixels 15x15
 function createGrid() {
   let html = '<div class="gamefield" id="gamefield">';
 
-  for (let i = 0; i < 225; i++) {
-    // style="background-color:''";
-    html += `<div class="pixel" id="${i}"></div>`;
-  }
-  html += "</div>";
+    for (let i = 0; i < 225; i++) {
+        html += `<div class="pixel" id="${i}"></div>`;
+    }
+    html += '</div>';
 
-  // Where to insert the gamefield container
-  // gameContainer.insertAdjacentHTML('afterbegin', html);
-  gameContainer.innerHTML = html;
+    // Where to insert the gamefield container
+    gameContainer.innerHTML = html;
 }
 
 // GET USERS AND PRINT IN CHAT
@@ -97,96 +110,73 @@ socket.on("message", (message) => {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-socket.on("playerColor", (data) => {
-  // addColorOnPixel(data.color);
-  // localStorage.setItem('playerColor', data.color);
-  color = data.color;
+socket.on('playerColor', (data) => {
+    color = data.color;
 });
 
 // wher a player join the game
-socket.on("waitForPlayers", (playerConnected) => {
-  // if 4 players have joined the game, the start it for all players
-  // else update how many players are connected x/4
+socket.on('waitForPlayers', (playerConnected) => {
+    // if 4 players have joined the game, the start it for all players
+    // else update how many players are connected x/4
 
-  // document.getElementById('gamefield').style.backgroundImage = '';
-  gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
-  usernameDisplay.style.backgroundColor = "";
-  saveBtn.hidden = true;
-  loadBtn.hidden = true;
-  startBtn.hidden = true;
+    gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
+    usernameDisplay.style.backgroundColor = '';
+    saveBtn.hidden = true;
+    loadBtn.hidden = true;
+    startBtn.hidden = true;
+    getGameBtn.hidden = true;
+    paintBtn.hidden = true;
+});
 
-  // Generate the grid for all players, see emit (after startGame)
-  socket.on("startGameClick", () => {
+// Generate the grid for all players, see emit (after startGame)
+socket.on('startGameClick', () => {
     startBtn.hidden = false;
-    loadBtn.hidden = false;
-    //localStorage.setItem("playerColor", data.color);
-  });
+    paintBtn.hidden = false;
+});
 
   socket.on("startGame", (background) => {
     createGrid();
     addColorOnPixel(color);
+    saveBtn.hidden = true;
+    loadBtn.hidden = true;
+    startBtn.hidden = true;
+    paintBtn.hidden = true;
     usernameDisplay.style.backgroundColor = color;
     document.getElementById(
       "gamefield"
     ).style.backgroundImage = `url(${background})`;
-    saveBtn.hidden = false;
-  });
+    resultContainer.innerHTML = "";
+});
 
   // Send the players color and clicked pixel-ID to server for broadcasting
   function addColorOnPixel(color) {
     // Get your assigned color
-    // let color = document.querySelector('.colorbox').id;
 
     // Add addEventListener on each pixel
-    document.querySelectorAll(".pixel").forEach((pixel) => {
-      pixel.addEventListener("click", (e) => {
-        // If pixel doesn't have an inline background-color style
-        // Then set color (so you can't change another players pixel)
-        // console.log('clicking pixel');
-        // === "background-color:''"
-        if (!e.target.getAttribute("style")) {
-          // Set the pixel-color for the player
-          e.target.setAttribute("style", `background-color:${color}`);
+    document.querySelectorAll('.pixel').forEach((pixel) => {
+        pixel.addEventListener('click', (e) => {
+            // If pixel doesn't have an inline background-color style
+            // Then set color (so you can't change another players pixel)
+            if (!e.target.getAttribute('style')) {
+                // Set the pixel-color for the player
+                e.target.setAttribute('style', `background-color:${color}`);
 
-          // Save the pixel information in an object to send
-          let pixelData = {
-            id: e.target.id,
-            color,
-          };
+                // Save the pixel information in an object to send
+                let pixelData = {
+                    id: e.target.id,
+                    color,
+                };
 
-          // Send the data to server for broadcast to the other players
-          socket.emit("addColorOnTarget", pixelData);
+                // Send the data to server for broadcast to the other players
+                socket.emit('addColorOnTarget', pixelData);
 
-          let sendPixelInfo = { id: e.target.id, color: color };
+                let sendPixelInfo = { id: e.target.id, color: color };
 
-          socket.emit("toPicArray", sendPixelInfo);
-        }
-      });
-
-      // pixel.addEventListener('contextmenu', (e) => {
-      //     e.preventDefault();
-      //     if (
-      //         document.getElementById(e.target.id).style.backgroundColor ===
-      //         color
-      //     ) {
-      //         e.target.setAttribute('style', `background-color:''`);
-      //         // Save the pixel information in an object to send
-      //         let pixelData = {
-      //             id: e.target.id,
-      //             color: "''",
-      //         };
-
-      //         // Send the data to server for broadcast to the other players
-      //         socket.emit('addColorOnTarget', pixelData);
-
-      //         let sendPixelInfo = { id: e.target.id, color: color };
-
-      //         socket.emit('toPicArray', sendPixelInfo);
-      //     }
-      // });
+                socket.emit('toPicArray', sendPixelInfo);
+            };
+        });
     });
-  }
-});
+};
 
 // Add the color that other players clicked on
 socket.on("addPixel", ({ id, color }) => {
@@ -233,35 +223,18 @@ function outputUsers(users) {
 }
 
 async function saveGame() {
-  const htmlGameState = document.getElementById("gamefield").outerHTML;
-  // console.log(htmlGameState);
-  const response = await fetch("http://localhost:3000/save", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ htmlGameState }),
-  });
-  const result = await response.json();
-}
-
-function savePicToDB() {
-  socket.emit("wantsPicArray", "click");
-
-  socket.on("sendArrayToServer", (array) => {
-    // fetch('http://localhost:3000/savePic', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ array }),
-    // })
-    //     .then((resp) => resp.json())
-    //     .then((answer) => {
-    //         console.log(answer);
-    //     });
-  });
-}
+    const htmlGameState = document.getElementById('gamefield').outerHTML;
+    console.log(htmlGameState);
+    const response = await fetch('http://localhost:3000/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ htmlGameState }),
+    });
+    const result = await response.json();
+    console.log(result);
+};
 
 let currentPicId;
 
@@ -270,64 +243,63 @@ socket.on("correctGame", (picId) => {
 });
 
 function correctGame() {
-  socket.emit("wantsPicArray");
+    socket.emit('wantsPicArray');
 
-  let sendPicId = currentPicId;
-  let correctAnswers = 0;
+    let sendPicId = currentPicId;
+    let correctAnswers = 0;
 
-  socket.on("sendArrayToServer", (array) => {
-    console.log("Det här är våra klick", array);
+    socket.on('sendArrayToServer', (array) => {
+        console.log('Det här är våra klick', array);
 
-    fetch("http://localhost:3000/getSolution", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ sendPicId }),
-    })
-      .then((resp) => resp.json())
-      .then((answer) => {
-        console.log("Solution: ", answer);
+        fetch('http://localhost:3000/getSolution', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ sendPicId })
+        })
+            .then((resp) => resp.json())
+            .then((answer) => {
+                console.log('Solution: ', answer);
 
-        for (let i = 0; i < answer.length; i++) {
-          for (let j = 0; j < array.length; j++) {
-            if (
-              array[j].id == answer[i].id &&
-              array[j].color == answer[i].color
-            ) {
-              console.log(
-                "correct with " + array[j].id,
-                answer[i].id,
-                array[j].color,
-                answer[i].color
-              );
-              correctAnswers++;
-            }
-          }
-        }
+                for (let i = 0; i < answer.length; i++) {
+                    for (let j = 0; j < array.length; j++) {
+                        if (
+                            array[j].id == answer[i].id &&
+                            array[j].color == answer[i].color
+                        ) {
+                            console.log("correct with "+  array[j].id, answer[i].id, array[j].color, answer[i].color);
+                            correctAnswers++;
+                        }
+                    }
+                }
 
-        let correctAnswerPercent = (correctAnswers / 225) * 100;
-        let corAnsPer = correctAnswerPercent.toFixed(2);
-        console.log(correctAnswers);
-        console.log(corAnsPer + "%");
-        socket.off("sendArrayToServer");
-      });
-  });
-}
+                let correctAnswerPercent = (correctAnswers / answer.length) * 100;
+                let corAnsPer = correctAnswerPercent.toFixed(2);
+                console.log(correctAnswers);
+                console.log(corAnsPer + '%');
+                resultContainer.innerHTML = "";
+                resultContainer.innerHTML = `<div class="result-container"><p>Ert resultat:</p> <p class="correct-percent">${corAnsPer}% korrekt.</p></div>`
+                startBtn.hidden = false;
+                paintBtn.hidden = false;
+
+                socket.off('sendArrayToServer');
+            });
+    });
+};
 
 function getGame() {
-  const gameContainer = document.getElementById("gamefield");
-  fetch("http://localhost:3000/getGame")
-    .then((resp) => resp.json())
-    .then((data) => {
-      gameContainer.outerHTML = data.gameboard;
-      // addColorOnPixel(localStorage.getItem('playerColor'));
-      addColorOnPixel(color);
-      socket.emit("loadGame", data.gameboard);
-    });
-}
+    const gameContainer = document.getElementById('gamefield');
+    fetch('http://localhost:3000/getGame')
+        .then((resp) => resp.json())
+        .then((data) => {
+            gameContainer.outerHTML = data.gameboard;
+            addColorOnPixel(color);
+            socket.emit('loadGame', data.gameboard);
+        });
+};
 
-socket.on("loadGameboard", (gameboard) => {
-  document.getElementById("gamefield").outerHTML = gameboard;
-  addColorOnPixel(color);
+socket.on('loadGameboard', (gameboard) => {
+    document.getElementById('gamefield').outerHTML = gameboard;
+    addColorOnPixel(color);
 });
