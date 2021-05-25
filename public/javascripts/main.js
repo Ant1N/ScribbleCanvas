@@ -25,9 +25,6 @@ document.addEventListener('click', (evt) => {
         case 'getGameBtn':
             getGame();
             break;
-        case 'savePicToDB':
-            savePicToDB();
-            break;
         case 'startBtn':
             socket.emit('letsPlay');
             socket.emit("timerStart");
@@ -35,7 +32,7 @@ document.addEventListener('click', (evt) => {
         case 'paintBtn':
           socket.emit('paintMode');
         break;
-    }
+    };
 });
 
 socket.on('printPaintMode', () => {
@@ -48,10 +45,10 @@ function paintMode() {
   usernameDisplay.style.backgroundColor = color;
   saveBtn.hidden = false;
   loadBtn.hidden = false;
-}
+};
 
 function startTimer() {
-    var incomeTicker = 10;
+  let incomeTicker = 10;
 
   timer = setInterval(function () {
     if (incomeTicker > 0) {
@@ -60,13 +57,13 @@ function startTimer() {
     } else {
       stopTimer();
       correctGame();
-    }
+    };
   }, 1000);
-}
+};
 
 function stopTimer() {
-    clearInterval(timer);
-}
+  clearInterval(timer);
+};
 
 //Modal function
 function removeModal() {
@@ -78,20 +75,18 @@ function removeModal() {
 function displayUser() {
     const usernameDisplay = document.getElementById('usernameDisplay');
     usernameDisplay.innerHTML = username.value;
-}
+};
 
 // Genereate the gamefield container and pixels 15x15
 function createGrid() {
     let html = '<div class="gamefield" id="gamefield">';
 
     for (let i = 0; i < 225; i++) {
-        // style="background-color:''";
         html += `<div class="pixel" id="${i}"></div>`;
     }
     html += '</div>';
 
     // Where to insert the gamefield container
-    // gameContainer.insertAdjacentHTML('afterbegin', html);
     gameContainer.innerHTML = html;
 }
 
@@ -113,8 +108,6 @@ socket.on('message', (message) => {
 });
 
 socket.on('playerColor', (data) => {
-    // addColorOnPixel(data.color);
-    // localStorage.setItem('playerColor', data.color);
     color = data.color;
 });
 
@@ -123,7 +116,6 @@ socket.on('waitForPlayers', (playerConnected) => {
     // if 4 players have joined the game, the start it for all players
     // else update how many players are connected x/4
 
-    // document.getElementById('gamefield').style.backgroundImage = '';
     gameContainer.innerHTML = `<p class="playersconnected">Players connected ${playerConnected}/4</p>`;
     usernameDisplay.style.backgroundColor = '';
     saveBtn.hidden = true;
@@ -137,8 +129,6 @@ socket.on('waitForPlayers', (playerConnected) => {
 socket.on('startGameClick', () => {
     startBtn.hidden = false;
     paintBtn.hidden = false;
-
-    //localStorage.setItem("playerColor", data.color);
 });
 
 socket.on('startGame', (background) => {
@@ -155,15 +145,12 @@ socket.on('startGame', (background) => {
 // Send the players color and clicked pixel-ID to server for broadcasting
 function addColorOnPixel(color) {
     // Get your assigned color
-    // let color = document.querySelector('.colorbox').id;
 
     // Add addEventListener on each pixel
     document.querySelectorAll('.pixel').forEach((pixel) => {
         pixel.addEventListener('click', (e) => {
             // If pixel doesn't have an inline background-color style
             // Then set color (so you can't change another players pixel)
-            // console.log('clicking pixel');
-            // === "background-color:''"
             if (!e.target.getAttribute('style')) {
                 // Set the pixel-color for the player
                 e.target.setAttribute('style', `background-color:${color}`);
@@ -180,32 +167,10 @@ function addColorOnPixel(color) {
                 let sendPixelInfo = { id: e.target.id, color: color };
 
                 socket.emit('toPicArray', sendPixelInfo);
-            }
+            };
         });
-
-        // pixel.addEventListener('contextmenu', (e) => {
-        //     e.preventDefault();
-        //     if (
-        //         document.getElementById(e.target.id).style.backgroundColor ===
-        //         color
-        //     ) {
-        //         e.target.setAttribute('style', `background-color:''`);
-        //         // Save the pixel information in an object to send
-        //         let pixelData = {
-        //             id: e.target.id,
-        //             color: "''",
-        //         };
-
-        //         // Send the data to server for broadcast to the other players
-        //         socket.emit('addColorOnTarget', pixelData);
-
-        //         let sendPixelInfo = { id: e.target.id, color: color };
-
-        //         socket.emit('toPicArray', sendPixelInfo);
-        //     }
-        // });
     });
-}
+};
 
 // Add the color that other players clicked on
 socket.on('addPixel', ({ id, color }) => {
@@ -253,7 +218,7 @@ function outputUsers(users) {
 
 async function saveGame() {
     const htmlGameState = document.getElementById('gamefield').outerHTML;
-    // console.log(htmlGameState);
+    console.log(htmlGameState);
     const response = await fetch('http://localhost:3000/save', {
         method: 'POST',
         headers: {
@@ -262,26 +227,8 @@ async function saveGame() {
         body: JSON.stringify({ htmlGameState }),
     });
     const result = await response.json();
-}
-
-function savePicToDB() {
-    socket.emit('wantsPicArray', 'click');
-
-    socket.on('sendArrayToServer', (array) => {
-
-        // fetch('http://localhost:3000/savePic', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ array }),
-        // })
-        //     .then((resp) => resp.json())
-        //     .then((answer) => {
-        //         console.log(answer);
-        //     });
-    });
-}
+    console.log(result);
+};
 
 let currentPicId;
 
@@ -328,7 +275,7 @@ function correctGame() {
                 socket.off('sendArrayToServer');
             });
     });
-}
+};
 
 function getGame() {
     const gameContainer = document.getElementById('gamefield');
@@ -336,11 +283,10 @@ function getGame() {
         .then((resp) => resp.json())
         .then((data) => {
             gameContainer.outerHTML = data.gameboard;
-            // addColorOnPixel(localStorage.getItem('playerColor'));
             addColorOnPixel(color);
             socket.emit('loadGame', data.gameboard);
         });
-}
+};
 
 socket.on('loadGameboard', (gameboard) => {
     document.getElementById('gamefield').outerHTML = gameboard;

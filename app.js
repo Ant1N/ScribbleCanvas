@@ -72,7 +72,6 @@ var picArray = [];
 io.on('connection', (socket) => {
     // GET USER FROM USERS.JS
     socket.on('joinGame', (username) => {
-        // console.log('username', username);
 
         // PUSH USER TO USER-ARRAY
         const user = userJoin(socket.id, username);
@@ -104,14 +103,8 @@ io.on('connection', (socket) => {
 
         // get the amount of colors taken and send it to the connected clients
         if (getAmountOfPlayers() === 4) {
-            // socket.on('startGame', () => {
-            //  let background = getBackground();
-            // console.log('background', background);
-
-            // io.emit('playersConnected', getAmountOfPlayers());
             io.emit('waitForPlayers', getAmountOfPlayers());
             io.emit('startGameClick');
-            // });
         } else {
             io.emit('waitForPlayers', getAmountOfPlayers());
         }
@@ -196,7 +189,6 @@ function getAmountOfPlayers() {
     ).length;
 
     // send amount of players connected to all connected clients
-    // return io.emit('playersConnected', playersConnected);
     return playersConnected;
 }
 
