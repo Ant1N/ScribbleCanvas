@@ -304,7 +304,7 @@ function correctGame() {
                     }
                 }
 
-                let correctAnswerPercent = (correctAnswers / 225) * 100;
+                let correctAnswerPercent = (correctAnswers / answer.length) * 100;
                 let corAnsPer = correctAnswerPercent.toFixed(2);
                 console.log(correctAnswers);
                 console.log(corAnsPer + '%');
