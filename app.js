@@ -175,6 +175,10 @@ io.on('connection', (socket) => {
         startGame();
         io.emit('timerStartClient');
     });
+
+    socket.on('paintMode', () => {
+        io.emit('printPaintMode');
+    });
 });
 
 // Finds the players color on their socket id and removes the ID
