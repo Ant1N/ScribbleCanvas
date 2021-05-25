@@ -44,6 +44,7 @@ router.get('/getPic', async function (req, res, next) {
 
   const data = await Pic.findOne({picId: randomBetween1and5});
   res.json(data);
+  console.log(data);
 });
 
 router.post('/getSolution', async function (req, res, next) {
