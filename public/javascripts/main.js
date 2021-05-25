@@ -32,10 +32,23 @@ document.addEventListener('click', (evt) => {
             socket.emit('letsPlay');
             socket.emit("timerStart");
             break;
+        case 'paintBtn':
+          socket.emit('paintMode');
+        break;
     }
 });
 
+socket.on('printPaintMode', () => {
+  paintMode();
+});
 
+function paintMode() {
+  createGrid();
+  addColorOnPixel(color);
+  usernameDisplay.style.backgroundColor = color;
+  saveBtn.hidden = false;
+  loadBtn.hidden = false;
+}
 
 function startTimer() {
     var incomeTicker = 10;
@@ -116,23 +129,27 @@ socket.on('waitForPlayers', (playerConnected) => {
     saveBtn.hidden = true;
     loadBtn.hidden = true;
     startBtn.hidden = true;
+    getGameBtn.hidden = true;
+    paintBtn.hidden = true;
 });
 
 // Generate the grid for all players, see emit (after startGame)
 socket.on('startGameClick', () => {
     startBtn.hidden = false;
-    loadBtn.hidden = false;
+    paintBtn.hidden = false;
+
     //localStorage.setItem("playerColor", data.color);
 });
 
 socket.on('startGame', (background) => {
     createGrid();
     addColorOnPixel(color);
+    saveBtn.hidden = true;
+    loadBtn.hidden = true;
     usernameDisplay.style.backgroundColor = color;
     document.getElementById(
         'gamefield'
     ).style.backgroundImage = `url(${background})`;
-    saveBtn.hidden = false;
 });
 
 // Send the players color and clicked pixel-ID to server for broadcasting
