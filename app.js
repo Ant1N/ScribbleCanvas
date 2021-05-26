@@ -205,7 +205,7 @@ async function startGame() {
     // GET RANDOM NUMBER
     let randomBetween1and5 = Math.floor(Math.random() * 5);
 
-    const randomBackground = backgrounds[1][0];
+    const randomBackground = backgrounds[randomBetween1and5][0];
 
     io.emit('startGame', randomBackground.url);
 
