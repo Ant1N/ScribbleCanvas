@@ -60,7 +60,7 @@ function startTimer() {
       correctGame();
     };
   }, 1000);
-  
+
 };
 
 function stopTimer() {
@@ -184,6 +184,14 @@ socket.on("addPixel", ({ id, color }) => {
     .getElementById(id)
     .setAttribute("style", `background-color:${color}`);
 });
+
+
+socket.on('maxplayers', () => {
+  document.body.innerHTML = `
+   <h1>Pixel Painter!</h1>
+  <h2>Spelet är fullt! Test igen senare</h2>
+   `
+})
 
 // SUBMIT MESSAGE TO SERVER
 chatForm.addEventListener("submit", (e) => {
