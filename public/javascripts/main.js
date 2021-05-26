@@ -233,7 +233,7 @@ function outputUsers(users) {
 async function saveGame() {
     const htmlGameState = document.getElementById('gamefield').outerHTML;
     console.log(htmlGameState);
-    const response = await fetch('https://p1xelpainter.herokuapp.com/save', {
+    const response = await fetch('http://localhost:3000/save', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -242,6 +242,8 @@ async function saveGame() {
     });
     const result = await response.json();
     console.log(result);
+
+    resultContainer.innerHTML = `<p>Sparat!</p>`;
 };
 
 let currentPicId;
@@ -259,7 +261,7 @@ function correctGame() {
     socket.on('sendArrayToServer', (array) => {
         console.log('Det här är våra klick', array);
 
-        fetch('https://p1xelpainter.herokuapp.com/getSolution', {
+        fetch('http://localhost:3000/getSolution', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -298,7 +300,7 @@ function correctGame() {
 
 function getGame() {
     const gameContainer = document.getElementById('gamefield');
-    fetch('https://p1xelpainter.herokuapp.com/getGame')
+    fetch('http://localhost:3000/getGame')
         .then((resp) => resp.json())
         .then((data) => {
             gameContainer.outerHTML = data.gameboard;
