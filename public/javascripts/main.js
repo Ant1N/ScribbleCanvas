@@ -242,6 +242,8 @@ async function saveGame() {
     });
     const result = await response.json();
     console.log(result);
+    resultContainer.innerHTML = `<p>Sparat!</p>`;
+
 };
 
 let currentPicId;
