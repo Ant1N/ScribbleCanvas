@@ -196,7 +196,7 @@ async function startGame() {
     picArray = [];
     const backgrounds = [
         [{ picId: 1, url: '../stylesheets/pictures/pizza.png' }],
-        [{ picId: 2, url: '../stylesheets/pictures/Mario.png' }],
+        [{ picId: 2, url: '../stylesheets/pictures/mario.png' }],
         [{ picId: 3, url: '../stylesheets/pictures/emoji.png' }],
         [{ picId: 4, url: '../stylesheets/pictures/hjarta.png' }],
         [{ picId: 5, url: '../stylesheets/pictures/burger.png' }],
@@ -205,7 +205,7 @@ async function startGame() {
     // GET RANDOM NUMBER
     let randomBetween1and5 = Math.floor(Math.random() * 5);
 
-    const randomBackground = backgrounds[1][0];
+    const randomBackground = backgrounds[randomBetween1and5][0];
 
     io.emit('startGame', randomBackground.url);
 
