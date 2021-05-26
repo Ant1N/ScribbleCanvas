@@ -244,11 +244,11 @@ async function saveGame() {
     console.log(result);
 
     socket.emit('paintSaved');
-    
-    socket.on('printSavedText', () => {
-      resultContainer.innerHTML = `<p>Sparat!</p>`;
-    });
 };
+
+socket.on('printSavedText', () => {
+  resultContainer.innerHTML = `<p>Sparat!</p>`;
+});
 
 let currentPicId;
 
