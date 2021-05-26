@@ -146,7 +146,9 @@ nav h3 {
     background-position: center;
     background-size: cover;
 }
-
+.stopColor {
+    pointer-events: none;
+}
 /* Chat Page */
 .chat-container {
     flex: 1;

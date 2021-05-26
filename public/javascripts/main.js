@@ -46,6 +46,7 @@ function paintMode() {
   usernameDisplay.style.backgroundColor = color;
   saveBtn.hidden = false;
   loadBtn.hidden = false;
+  paintBtn.hidden = true;
 };
 
 function startTimer() {
@@ -257,6 +258,7 @@ socket.on("correctGame", (picId) => {
 });
 
 function correctGame() {
+    document.getElementById('gamefield').classList.add('stopColor');
     socket.emit('wantsPicArray');
 
     let sendPicId = currentPicId;
