@@ -172,10 +172,6 @@ io.on('connection', (socket) => {
     socket.on('paintMode', () => {
         io.emit('printPaintMode');
     });
-
-    socket.on('paintSaved', () => {
-        io.emit('printSavedText');
-    });
 });
 
 // Finds the players color on their socket id and removes the ID
@@ -207,7 +203,7 @@ async function startGame() {
     ];
 
     // GET RANDOM NUMBER
-    let randomBetween1and5 = Math.floor(Math.random() * 5);
+    let randomBetween1and5 = Math.floor(Math.random() * 5 + 1);
 
     const randomBackground = backgrounds[randomBetween1and5][0];
 
